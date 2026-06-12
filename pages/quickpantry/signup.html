@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Student Sign Up</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ❌ remove center */
+  align-items: center;
+  background: #f1f5f9;
+  padding: 20px;
+  gap: 20px;
+}
+
+    .card{
+
+      width:100%;
+      max-width:430px;
+
+      background:white;
+
+      padding:28px;
+
+      border-radius:18px;
+
+      box-shadow:
+        0 10px 40px rgba(0,0,0,.08);
+
+    }
+
+    .title{
+      text-align:center;
+      margin-bottom:24px;
+    }
+
+    .title h1{
+      font-size:30px;
+      color:#0f172a;
+      margin-bottom:8px;
+    }
+
+    .title p{
+      color:#64748b;
+      font-size:14px;
+    }
+
+    .input-group{
+      margin-bottom:16px;
+    }
+
+    .input-group label{
+
+      display:block;
+
+      margin-bottom:6px;
+
+      font-size:14px;
+
+      font-weight:600;
+
+      color:#334155;
+
+    }
+
+    .input-group input,
+    .input-group select{
+
+      width:100%;
+
+      padding:13px 14px;
+
+      border:1px solid #cbd5e1;
+
+      border-radius:10px;
+
+      outline:none;
+
+      font-size:15px;
+
+      transition:.2s;
+
+    }
+
+    .input-group input:focus,
+    .input-group select:focus{
+
+      border-color:#2563eb;
+
+      box-shadow:
+        0 0 0 3px rgba(37,99,235,.15);
+
+    }
+
+    .signup-btn{
+
+      width:100%;
+
+      border:none;
+
+      background:#2563eb;
+
+      color:white;
+
+      padding:14px;
+
+      border-radius:10px;
+
+      font-size:15px;
+
+      font-weight:700;
+
+      cursor:pointer;
+
+      transition:.2s;
+
+    }
+
+    .signup-btn:hover{
+      background:#1d4ed8;
+    }
+
+    .message{
+
+      margin-top:16px;
+
+      text-align:center;
+
+      font-size:14px;
+
+      font-weight:600;
+
+    }
+
+    .success{
+      color:#16a34a;
+    }
+
+    .error{
+      color:#dc2626;
+    }
+
+    .spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ffffff55;
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.hidden {
+  display: none;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.footer {
+  background: linear-gradient(135deg, #1e3a8a 0%, #0c2348 100%);
+  color: white;
+  padding: 20px 15px;
+  border-radius: 18px;
+  text-align: center;
+  width: 100%;
+  margin-top: auto; /* IMPORTANT */
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.logos-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.logo-item img {
+  height: 60px;
+  width: auto;
+}
+
+.footer-text {
+  font-size: 13px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page {
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+  </style>
+
+</head>
+<body>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="spinner"></div>
+  <p>Submitting request...</p>
+</div>
+<div class="page">
+  <div class="card">
+
+    <div class="title">
+
+      <h1>Student Sign Up</h1>
+
+      <p>
+        Registration requires admin approval
+      </p>
+
+    </div>
+
+    <!-- ================= NAME ================= -->
+
+    <div class="input-group">
+
+      <label>
+        Full Name
+      </label>
+
+      <input
+        type="text"
+        id="studentName"
+        placeholder="SURNAME, FIRSTNAME, MIDDLE NAME EXT."
+      />
+
+    </div>
+
+    <!-- ================= STUDENT NUMBER ================= -->
+
+    <div class="input-group">
+
+      <label>
+        Student Number
+      </label>
+
+      <input
+        type="text"
+        id="studentNumber"
+        placeholder="2024-0001"
+      />
+
+    </div>
+
+    <!-- ================= YEAR ================= -->
+
+    <div class="input-group">
+
+      <label>
+        Year
+      </label>
+
+      <select id="studentYear">
+
+        <option value="">
+          Select Year
+        </option>
+
+        <option>
+          1st Year
+        </option>
+
+        <option>
+          2nd Year
+        </option>
+
+        <option>
+          3rd Year
+        </option>
+
+        <option>
+          4th Year
+        </option>
+
+      </select>
+
+    </div>
+
+    <!-- ================= COURSE ================= -->
+
+    <div class="input-group">
+
+      <label>
+        Course
+      </label>
+
+      <select id="studentCourse">
+
+        <option value="">
+          Select Course
+        </option>
+
+        <option>
+          HE
+        </option>
+
+        <option>
+          ICT
+        </option>
+
+        <option>
+          IA
+        </option>
+      </select>
+    </div>
+
+    <!-- ================= BUTTON ================= -->
+
+<button
+  id="submitBtn"
+  class="signup-btn"
+  onclick="signUpStudent()"
+>
+  Create Account
+</button>
+
+    <!-- ================= MESSAGE ================= -->
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+  </div>
+</div>
+
+   <!-- 🆕 FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="logos-container">
+        <div class="logo-item">
+        <img preload src="/assets/images/SLSU_Logo.png">
+        <div class="logo-label">
+          SOUTHERN LUZON STATE UNIVERSITY
+        </div>
+      </div>
+
+      <div class="logo-item">
+        <img preload src="/assets/images/favicon_v2.jpg">
+        <div class="logo-label">
+          ENSEMBLES OF LIVELIHOOD TECHNOLOGY STUDENTS (ELITES)
+        </div>
+      </div>
+
+      <div class="logo-item">
+        <img preload src="/assets/images/CTE.png">
+        <div class="logo-label">
+          COLLEGE OF TEACHER EDUCATION
+        </div>
+      </div>
+      </div>
+          <p><i class="footer-text"></i> Copyright 2026 by EDRAD, ZYTHANIEL. | All rights reserved.|
+            <!--<button id="tipBtn" style="background: #0000f8; color: white; border: none; padding: 10px 14px; border-radius: 1px; cursor: pointer;">💖 Support / Tip</button>-->
+            <!--<a href="#" rel="sponsored" target="_parent">Open Source</a></p>-->
+        </div>
+      </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= FIREBASE SCRIPT ================= -->
+
+  <script type="module">
+
+    import {
+
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      where
+
+    }
+
+    from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    import { db }
+    from "/assets/config/quickpantry_config.js";
+
+    // ================= ELEMENTS =================
+
+    const studentNumber =
+      document.getElementById("studentNumber");
+
+    const studentName =
+      document.getElementById("studentName");
+
+    const studentYear =
+      document.getElementById("studentYear");
+
+    const studentCourse =
+      document.getElementById("studentCourse");
+
+    const message =
+      document.getElementById("message");
+
+    const submitBtn =
+  document.getElementById("submitBtn");
+
+   window.signUpStudent = async function () {
+
+  const loadingOverlay =
+    document.getElementById("loadingOverlay");
+
+  const setLoading = (state) => {
+    loadingOverlay.classList.toggle("hidden", !state);
+  };
+
+  const number = studentNumber.value.trim();
+  const name = studentName.value.trim().toUpperCase();
+  const year = studentYear.value.trim();
+  const course = studentCourse.value.trim();
+
+  // ================= VALIDATION =================
+  if (!number || !name || !year || !course) {
+    showMessage("❌ Please fill all fields", "error");
+    return;
+  }
+
+const namePattern =
+/^[A-Z]+(?:\s[A-Z]+)*,\s[A-Z]+(?:\s[A-Z]+)*(?:\s[A-Z]+)*(?:\s(JR\.|SR\.|III))?$/;
+
+  if (!namePattern.test(name)) {
+    showMessage("❌ Invalid name format", "error");
+    return;
+  }
+
+  try {
+
+    setLoading(true); // 🔥 SHOW SPINNER
+
+    // ================= CHECK DUPLICATES =================
+    const approvedSnap = await getDocs(
+      query(collection(db, "students"), where("studentNumber", "==", number))
+    );
+
+    const pendingSnap = await getDocs(
+      query(collection(db, "student_requests"), where("studentNumber", "==", number))
+    );
+
+    if (!approvedSnap.empty || !pendingSnap.empty) {
+      setLoading(false);
+      showMessage("❌ Student number already exists", "error");
+      return;
+    }
+
+    const approvedNameSnap = await getDocs(
+      query(collection(db, "students"), where("name", "==", name))
+    );
+
+    const pendingNameSnap = await getDocs(
+      query(collection(db, "student_requests"), where("name", "==", name))
+    );
+
+    if (!approvedNameSnap.empty || !pendingNameSnap.empty) {
+      setLoading(false);
+      showMessage("❌ Student name already exists", "error");
+      return;
+    }
+
+    // ================= SAVE REQUEST =================
+    await addDoc(collection(db, "student_requests"), {
+      studentNumber: number,
+      name,
+      year,
+      course,
+      status: "pending",
+      createdAt: new Date()
+    });
+
+    setLoading(false); // 🔥 HIDE SPINNER
+
+    showMessage("⏳ Submitted! Waiting for admin approval...", "success");
+
+    studentNumber.value = "";
+    studentName.value = "";
+    studentYear.value = "";
+    studentCourse.value = "";
+
+  }
+
+  catch (err) {
+    console.error(err);
+    setLoading(false);
+    showMessage("❌ " + err.message, "error");
+  }
+};
+
+function showMessage(text, type) {
+  const message = document.getElementById("message");
+
+  message.innerText = text;
+  message.className = "message " + type;
+}
+  </script>
+
+  <script>
+(function () {
+  function createDisclaimer() {
+    if (document.getElementById("nameDisclaimer")) return;
+
+    const div = document.createElement("div");
+    div.id = "nameDisclaimer";
+
+    div.innerHTML = `
+      ⚠️ <b>NAME FORMAT RULE</b><br>
+      Format: <b>SURNAME, FIRST NAME [SECOND NAME] [MIDDLE NAME] [JR./SR./III]</b><br><br>
+      ✔ Example: DELA CRUZ, JUAN PABLO SANTOS JR.<br>
+      ✔ Middle name is optional<br>
+      ✔ Extension is optional<br>
+      ❌ Must be CAPITAL LETTERS and include comma (,)
+    `;
+
+    div.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 320px;
+      background: #fff3cd;
+      color: #664d03;
+      border: 1px solid #ffecb5;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 99999;
+      font-family: Arial, sans-serif;
+    `;
+
+    // Close button
+    const closeBtn = document.createElement("button");
+    closeBtn.textContent = "✖";
+    closeBtn.style.cssText = `
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      cursor: pointer;
+    `;
+
+    closeBtn.onclick = () => div.remove();
+
+    div.appendChild(closeBtn);
+    document.body.appendChild(div);
+  }
+
+  // Auto run
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", createDisclaimer);
+  } else {
+    createDisclaimer();
+  }
+})();
+
+  </script>
+</body>
+</html>

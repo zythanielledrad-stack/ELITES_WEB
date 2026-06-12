@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>🎂 ELITES Birthday Dashboard</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+.empty{
+    text-align:center;
+    padding:15px;
+    color:#888;
+}
+
+.status.posted{
+    background:#4caf50;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.status.scheduled{
+    background:#ff9800;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.status.not-posted{
+    background:#f44336;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.status.new{
+    background:#22c55e;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.status.old{
+    background:#64748b;
+    color:#fff;
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:12px;
+}
+
+.actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.actions button{
+    border:none;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.birthday-card img{
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.85);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    position:relative;
+    max-width:90vw;
+    max-height:90vh;
+}
+
+.modal-content img{
+    max-width:100%;
+    max-height:90vh;
+    border-radius:12px;
+}
+
+.close{
+    position:absolute;
+    top:-15px;
+    right:-15px;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:#fff;
+    color:#000;
+    text-align:center;
+    line-height:35px;
+    font-size:22px;
+    cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- IMAGE MODAL -->
+<div id="imageModal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content">
+        <span class="close" onclick="closeImageModal()">&times;</span>
+        <img id="modalImage" src="" alt="Birthday Preview">
+    </div>
+</div>
+
+<div class="container">
+
+    <header>
+        <h1>🎂 ELITES Birthday Dashboard</h1>
+        <p>Current & Upcoming Birthdays</p>
+    </header>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+        <input
+            type="text"
+            id="search"
+            placeholder="Search birthday..."
+        >
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading" style="display:none;">
+        Loading birthday data...
+    </div>
+
+    <!-- ERROR -->
+    <div id="error" style="color:red;"></div>
+
+    <!-- DASHBOARD STATS -->
+    <div class="summary">
+
+        <div class="card stat">
+            <h2 id="todayCount">0</h2>
+            <p>Today's Birthdays</p>
+        </div>
+
+        <div class="card stat">
+            <h2 id="upcomingCount">0</h2>
+            <p>Upcoming</p>
+        </div>
+
+        <div class="card stat">
+            <h2 id="oldCount">0</h2>
+            <p>Old Records</p>
+        </div>
+
+        <div class="card stat">
+            <h2 id="newCount">0</h2>
+            <p>New Records</p>
+        </div>
+
+        <div class="card stat">
+            <h2 id="totalCount">0</h2>
+            <p>Total Records</p>
+        </div>
+
+        <div class="card stat">
+            <h2 id="nextBirthday">-</h2>
+            <p>Next Birthday</p>
+        </div>
+
+    </div>
+
+    <!-- TODAY -->
+    <h2>🎉 Today's Birthdays</h2>
+
+    <div id="todayBirthdays" class="birthday-grid"></div>
+
+    <!-- UPCOMING -->
+    <h2>📅 Upcoming Birthdays</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Birthday</th>
+                <th>Days Left</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="upcomingTable"></tbody>
+    </table>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+[
+  {
+    "id": 1,
+    "title": "FILING FOR GRADUATION",
+    "date": "2026-02-02",
+    "time": "7:00 AM",
+    "description": "Start of filing of application for graduation (May 2026).",
+    "color": "#3b82f6"
+  },
+  {
+    "id": 2,
+    "title": "FILING FOR GRADUATION",
+    "date": "2026-02-07",
+    "time": "7:00 AM",
+    "description": "Last day of filing of application for graduation (May 2026).",
+    "color": "#3b82f6"
+  },
+  {
+    "id": 3,
+    "title": "PRELIM EXAMS",
+    "date": "2026-02-16",
+    "time": "7:00 AM",
+    "description": "Preliminary examinations (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 4,
+    "title": "PRELIM EXAMS",
+    "date": "2026-02-20",
+    "time": "7:00 AM",
+    "description": "End of preliminary examinations (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 5,
+    "title": "NO CLASSES",
+    "date": "2026-02-17",
+    "time": "All Day",
+    "description": "Chinese Lunar New Year.",
+    "color": "#10b981"
+  },
+  {
+    "id": 6,
+    "title": "NO CLASSES",
+    "date": "2026-02-25",
+    "time": "All Day",
+    "description": "EDSA People Power Revolution.",
+    "color": "#10b981"
+  },
+  {
+    "id": 7,
+    "title": "GRADUATE EXAMS",
+    "date": "2026-03-14",
+    "time": "7:00 AM",
+    "description": "First term examinations (Graduate School).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 8,
+    "title": "ANNIVERSARY",
+    "date": "2026-03-17",
+    "time": "All Day",
+    "description": "Universityhood Anniversary Celebration.",
+    "color": "#8b5cf6"
+  },
+  {
+    "id": 9,
+    "title": "ENROLLMENT",
+    "date": "2026-03-18",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for 2nd semester.",
+    "color": "#ef4444"
+  },
+  {
+    "id": 10,
+    "title": "ENROLLMENT",
+    "date": "2026-03-19",
+    "time": "7:00 AM",
+    "description": "End of enrollment for 2nd semester.",
+    "color": "#ef4444"
+  },
+  {
+    "id": 11,
+    "title": "MIDTERM EXAMS",
+    "date": "2026-03-26",
+    "time": "7:00 AM",
+    "description": "Midterm examinations (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 12,
+    "title": "MIDTERM EXAMS",
+    "date": "2026-03-31",
+    "time": "7:00 AM",
+    "description": "End of midterm examinations (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 13,
+    "title": "HOLIDAY",
+    "date": "2026-04-02",
+    "time": "All Day",
+    "description": "Maundy Thursday.",
+    "color": "#10b981"
+  },
+  {
+    "id": 14,
+    "title": "HOLIDAY",
+    "date": "2026-04-03",
+    "time": "All Day",
+    "description": "Good Friday.",
+    "color": "#10b981"
+  },
+  {
+    "id": 15,
+    "title": "HOLIDAY",
+    "date": "2026-04-09",
+    "time": "All Day",
+    "description": "Araw ng Kagitingan.",
+    "color": "#10b981"
+  },
+  {
+    "id": 16,
+    "title": "FINAL EXAMS (GRADUATING)",
+    "date": "2026-04-27",
+    "time": "7:00 AM",
+    "description": "Start of final exams for graduating students.",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 17,
+    "title": "FINAL EXAMS (GRADUATING)",
+    "date": "2026-04-30",
+    "time": "7:00 AM",
+    "description": "End of final exams for graduating students.",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 18,
+    "title": "LABOR DAY",
+    "date": "2026-05-01",
+    "time": "All Day",
+    "description": "Regular holiday.",
+    "color": "#10b981"
+  },
+  {
+    "id": 19,
+    "title": "FINAL EXAMS",
+    "date": "2026-05-11",
+    "time": "7:00 AM",
+    "description": "Final exams (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 20,
+    "title": "FINAL EXAMS",
+    "date": "2026-05-13",
+    "time": "7:00 AM",
+    "description": "End of final exams (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 21,
+    "title": "ENROLLMENT (MIDYEAR)",
+    "date": "2026-05-21",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for midyear.",
+    "color": "#ef4444"
+  },
+  {
+    "id": 22,
+    "title": "ENROLLMENT (MIDYEAR)",
+    "date": "2026-05-22",
+    "time": "7:00 AM",
+    "description": "End of enrollment for midyear.",
+    "color": "#ef4444"
+  },
+  {
+    "id": 23,
+    "title": "MIDYEAR CLASSES",
+    "date": "2026-05-25",
+    "time": "7:00 AM",
+    "description": "Start of midyear classes.",
+    "color": "#3b82f6"
+  },
+  {
+    "id": 24,
+    "title": "MIDTERM EXAMS",
+    "date": "2026-06-11",
+    "time": "7:00 AM",
+    "description": "Midterm exams (College & Graduate School).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 25,
+    "title": "INDEPENDENCE DAY",
+    "date": "2026-06-12",
+    "time": "All Day",
+    "description": "Regular holiday.",
+    "color": "#10b981"
+  },
+  {
+    "id": 26,
+    "title": "COMMENCEMENT",
+    "date": "2026-06-22",
+    "time": "7:00 AM",
+    "description": "Tentative start of commencement exercises.",
+    "color": "#8b5cf6"
+  },
+  {
+    "id": 27,
+    "title": "FINAL EXAMS",
+    "date": "2026-07-02",
+    "time": "7:00 AM",
+    "description": "Final exams (College & Graduate School).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 28,
+    "title": "FINAL EXAMS",
+    "date": "2026-07-04",
+    "time": "7:00 AM",
+    "description": "End of final exams (College & Graduate School).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 31,
+    "title": "FINAL EXAMS",
+    "date": "2026-05-12",
+    "time": "7:00 AM",
+    "description": "End of final exams (College).",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 32,
+    "title": "LAST DAY OF CLASSES (MIDYEAR 2026)",
+    "date": "2026-07-04",
+    "time": "7:00 AM",
+    "description": "Last day of classes.",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 33,
+    "title": "LAST DAY OF SUBMISSION OF RATING SHEET (MIDYEAR 2026)",
+    "date": "2026-07-08",
+    "time": "7:00 AM",
+    "description": "Last day for submitting rating sheets.",
+    "color": "#f59e0b"
+  },
+  {
+    "id": 34,
+    "title": "ENROLLMENT FIRST SEMESTER AY 2026-2027 (COLLEGE)",
+    "date": "2026-07-06",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for 1st semester.",
+    "color": "green"
+  },
+  {
+    "id": 35,
+    "title": "ENROLLMENT FIRST SEMESTER AY 2026-2027 (COLLEGE)",
+    "date": "2026-07-07",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for 1st semester.",
+    "color": "green"
+  },
+  {
+    "id": 36,
+    "title": "ENROLLMENT FIRST SEMESTER AY 2026-2027 (COLLEGE)",
+    "date": "2026-07-08",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for 1st semester.",
+    "color": "green"
+  },
+  {
+    "id": 37,
+    "title": "ENROLLMENT FIRST SEMESTER AY 2026-2027 (COLLEGE)",
+    "date": "2026-07-09",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for 1st semester.",
+    "color": "green"
+  },
+  {
+    "id": 38,
+    "title": "ENROLLMENT FIRST SEMESTER AY 2026-2027 (COLLEGE)",
+    "date": "2026-07-10",
+    "time": "7:00 AM",
+    "description": "Start of enrollment for 1st semester.",
+    "color": "green"
+  },
+    {
+    "id": 47,
+    "title": "FIRST DAY OF CLASSES (COLLEGE)",
+    "date": "2026-07-13",
+    "time": "7:00 AM",
+    "description": "First day of classes for 1st semester.",
+    "color": "BLUE"
+  },
+    {
+    "id": 48,
+    "title": "ADDING & CHANGING OF SUBJECTS (COLLEGE)",
+    "date": "2026-07-13",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "BLUE"
+  },
+    {
+    "id": 49,
+    "title": "ADDING & CHANGING OF SUBJECTS (COLLEGE)",
+    "date": "2026-07-14",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "BLUE"
+  },
+    {
+    "id": 50,
+    "title": "ADDING & CHANGING OF SUBJECTS (COLLEGE)",
+    "date": "2026-07-15",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "BLUE"
+  },
+   {
+    "id": 51,
+    "title": "ADDING & CHANGING OF SUBJECTS (COLLEGE)",
+    "date": "2026-07-16",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "BLUE"
+  },
+  {
+    "id": 52,
+    "title": "ADDING & CHANGING OF SUBJECTS (COLLEGE)",
+    "date": "2026-07-17",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "BLUE"
+  },
+  {
+    "id": 53,
+    "title": "LAST DAY OF WITHDRAWAL OF REGISTRATION / ADDING CHANGING OF SUBJECT / ENROLLEMNT (COLLEGE)",
+    "date": "2026-07-17",
+    "time": "7:00 AM",
+    "description": "Last day of withdrawal of registration, adding and changing of subjects, and enrollment for 1st semester.",
+    "color": "BLUE"
+  },
+  {
+    "id": 54,
+    "title": "SLSU FOUNDING ANNIVERSARY",
+    "date": "2026-08-03",
+    "time": "7:00 AM",
+    "description": "Celebration of SLSU's founding anniversary.",
+    "color": "green"
+  },
+  {
+    "id": 55,
+    "title": "PRELIM EXAMATIONS (COLLEGE)",
+    "date": "2026-08-17",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "RED"
+  },
+  {
+    "id": 56,
+    "title": "PRELIM EXAMATIONS (COLLEGE)",
+    "date": "2026-08-20",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "RED"
+  },
+  {
+    "id": 57,
+    "title": "PRELIM EXAMATIONS (GRADUATE SCHOOL)",
+    "date": "2026-08-24",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "RED"
+  },
+  {
+    "id": 58,
+    "title": "PRELIM EXAMATIONS (GRADUATE SCHOOL)",
+    "date": "2026-08-25",
+    "time": "7:00 AM",
+    "description": "Period for adding and changing subjects.",
+    "color": "RED"
+  }
+  
+]

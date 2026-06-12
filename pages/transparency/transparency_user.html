@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8" />
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+  Transparency Hub
+</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+html,
+body{
+  height:100%;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:#f4f6f9;
+  padding:20px;
+}
+
+/* =========================
+   MAIN WRAPPER
+========================= */
+
+.wrapper{
+  flex:1;
+  width:100%;
+  max-width:1200px;
+  margin:auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+  margin-bottom:25px;
+}
+
+.header h1{
+  font-size:32px;
+  margin-bottom:15px;
+  color:#111827;
+}
+
+.filters{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.filters input,
+.filters select{
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  outline:none;
+  width:250px;
+}
+
+/* =========================
+   DOCUMENTS
+========================= */
+
+.documents-container{
+  display:grid;
+
+  grid-template-columns:
+  repeat(auto-fill,minmax(320px,1fr));
+
+  gap:20px;
+}
+
+.document-card{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  transition:.3s;
+}
+
+.document-card:hover{
+  transform:translateY(-4px);
+}
+
+.document-card h3{
+  margin-bottom:10px;
+  color:#111827;
+}
+
+.category{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:50px;
+  background:#eef2ff;
+  color:#4f46e5;
+  font-size:13px;
+  margin-bottom:12px;
+}
+
+.description{
+  color:#555;
+  margin-bottom:10px;
+  line-height:1.5;
+}
+
+.date{
+  font-size:13px;
+  color:#888;
+  margin-bottom:15px;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-block;
+  text-decoration:none;
+  padding:10px 16px;
+  border-radius:10px;
+  color:#fff;
+  font-size:14px;
+  transition:.3s;
+  border:none;
+  cursor:pointer;
+}
+
+.preview-btn{
+  background:#059669;
+}
+
+.view-btn{
+  background:#111827;
+}
+
+.download-btn{
+  background:#2563eb;
+}
+
+.btn:hover{
+  opacity:.9;
+}
+
+.empty{
+  text-align:center;
+  padding:60px;
+  color:#777;
+  grid-column:1/-1;
+  background:#fff;
+  border-radius:18px;
+}
+
+.loading{
+  text-align:center;
+  padding:50px;
+  color:#555;
+  grid-column:1/-1;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+
+  display:none;
+  justify-content:center;
+  align-items:center;
+
+  z-index:9999;
+}
+
+.modal-content{
+  width:95%;
+  height:90%;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+
+  display:flex;
+  flex-direction:column;
+}
+
+.modal-header{
+  background:#111827;
+  color:#fff;
+
+  padding:15px 20px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.modal-header h2{
+  font-size:18px;
+}
+
+.close-btn{
+  background:red;
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+#previewFrame{
+  flex:1;
+  width:100%;
+  border:none;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+  background:
+  linear-gradient(
+    135deg,
+    #1e3a8a 0%,
+    #0c2348 100%
+  );
+
+  color:white;
+
+  padding:20px 15px;
+
+  margin-top:40px;
+
+  text-align:center;
+
+  width:100%;
+}
+
+.footer-content{
+  max-width:700px;
+  margin:0 auto;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:25px;
+}
+
+.logos-container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  gap:40px;
+  flex-wrap:wrap;
+}
+
+.logo-item{
+  flex:1;
+  min-width:140px;
+  text-align:center;
+}
+
+.logo-item img{
+  height:70px;
+  width:auto;
+  max-width:160px;
+  max-height:80px;
+
+  border-radius:12px;
+
+  box-shadow:
+  0 8px 25px rgba(0,0,0,0.3);
+
+  transition:all .3s ease;
+
+  object-fit:contain;
+}
+
+.logo-item img:hover{
+  transform:
+  scale(1.05)
+  translateY(-5px);
+}
+
+.logo-label{
+  font-size:13px;
+  margin-top:12px;
+  opacity:.95;
+  font-weight:600;
+  letter-spacing:.5px;
+  line-height:1.3;
+}
+
+.footer-text{
+  font-size:14px;
+  opacity:.95;
+  line-height:1.6;
+  text-align:center;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  .filters input,
+  .filters select{
+    width:100%;
+  }
+
+  .logos-container{
+    gap:15px;
+  }
+
+  .logo-item{
+    min-width:120px;
+  }
+
+  .logo-item img{
+    height:60px;
+    max-width:140px;
+  }
+
+  .footer-text{
+    font-size:13px;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="header">
+
+    <h1>
+      Transparency Hub
+    </h1>
+
+    <div class="filters">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search documents..."
+      />
+
+      <select id="categoryFilter">
+
+        <option value="all">
+          All Categories
+        </option>
+
+        <option value="Fund Liquidation">
+          Fund Liquidation
+        </option>
+
+        <option value="Financial Reports">
+          Financial Reports
+        </option>
+
+        <option value="Narrative Reports">
+          Narrative Reports
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+  <div
+    id="documentsContainer"
+    class="documents-container"
+  >
+
+    <div class="loading">
+      Loading documents...
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     PREVIEW MODAL
+========================= -->
+
+<div
+  class="modal"
+  id="previewModal"
+>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h2 id="previewTitle">
+        Preview
+      </h2>
+
+      <button
+        class="close-btn"
+        onclick="closePreview()"
+      >
+        Close
+      </button>
+
+    </div>
+
+    <iframe id="previewFrame"></iframe>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="footer">
+
+  <div class="footer-content">
+
+    <div class="logos-container">
+
+      <div class="logo-item">
+        <img src="/assets/images/SLSU_Logo.png">
+        <div class="logo-label">
+          SOUTHERN LUZON STATE UNIVERSITY
+        </div>
+      </div>
+
+      <div class="logo-item">
+        <img src="/assets/images/favicon_v2.jpg">
+        <div class="logo-label">
+          ENSEMBLES OF LIVELIHOOD TECHNOLOGY STUDENTS (ELITES)
+        </div>
+      </div>
+
+      <div class="logo-item">
+        <img src="/assets/images/CTE.png">
+        <div class="logo-label">
+          COLLEGE OF TEACHER EDUCATION
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-text">
+      Copyright 2026 by EDRAD, ZYTHANIEL. | All rights reserved.
+    </div>
+    <div class="footer-text">
+      PLATFORM | DATUMANONG, MARY ANN. | All rights reserved.
+    </div>
+
+  </div>
+
+</footer>
+
+<script type="module">
+
+/* =========================
+   LOGIN PROTECTION
+========================= */
+
+const isLoggedIn =
+  localStorage.getItem("quickpantry_logged_in");
+
+const studentNumber =
+  localStorage.getItem("student_number");
+
+if (
+  isLoggedIn !== "true" ||
+  !studentNumber
+) {
+
+  alert("Please login first in Quick Pantry.");
+
+  window.location.href =
+    "/pages/quickpantry/quickpantry.html";
+
+}
+
+/* =========================
+   FIREBASE IMPORTS
+========================= */
+
+import {
+  initializeApp
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  onSnapshot
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  firebaseConfig
+} from "./config.js";
+
+/* =========================
+   FIREBASE INT 
+   ========================= */
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+/* =========================
+   LIVE SESSION PROTECTION
+========================= */
+
+
+const sessionRef =
+  doc(
+    db,
+    "active_session",
+    studentNumber
+  );
+
+onSnapshot(sessionRef, (snap) => {
+
+  const data = snap.data();
+
+  // NO SESSION
+  if (!data) {
+
+    revokeTransparencyAccess(
+      "Session not found"
+    );
+
+    return;
+  }
+
+  // FORCE LOGOUT
+  if (
+    data.loggedIn === false ||
+    data.forceLogout === true
+  ) {
+
+    revokeTransparencyAccess(
+      "Access revoked"
+    );
+
+  }
+
+});
+
+/* =========================
+   REVOKE ACCESS
+========================= */
+
+function revokeTransparencyAccess(reason) {
+
+  alert(
+    "⚠️ Transparency access revoked.\n" +
+    reason
+  );
+
+  localStorage.removeItem(
+    "quickpantry_logged_in"
+  );
+
+  localStorage.removeItem(
+    "student_number"
+  );
+
+  localStorage.removeItem(
+    "student"
+  );
+
+  window.location.href =
+    "/pages/quickpantry/quickpantry.html";
+
+}
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const container =
+document.getElementById(
+  "documentsContainer"
+);
+
+const modal =
+document.getElementById(
+  "previewModal"
+);
+
+const previewFrame =
+document.getElementById(
+  "previewFrame"
+);
+
+const previewTitle =
+document.getElementById(
+  "previewTitle"
+);
+
+let documentsData = [];
+
+/* =========================
+   LOAD DOCUMENTS
+========================= */
+
+async function loadDocuments(){
+
+  try{
+
+    container.innerHTML = `
+      <div class="loading">
+        Loading documents...
+      </div>
+    `;
+
+    const q = query(
+      collection(db,"transparency"),
+      orderBy("createdAt","desc")
+    );
+
+    const snapshot =
+    await getDocs(q);
+
+    documentsData = [];
+
+    snapshot.forEach(doc=>{
+
+      documentsData.push({
+
+        id:doc.id,
+        ...doc.data()
+
+      });
+
+    });
+
+    renderDocuments(documentsData);
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="empty">
+        Failed to load documents
+      </div>
+    `;
+
+  }
+
+}
+
+/* =========================
+   FORMAT DATE
+========================= */
+
+function formatDate(timestamp){
+
+  if(!timestamp){
+
+    return "No date";
+
+  }
+
+  try{
+
+    let date;
+
+    /* FIRESTORE TIMESTAMP */
+
+    if(timestamp.seconds){
+
+      date =
+      new Date(
+        timestamp.seconds * 1000
+      );
+
+    }
+
+    /* NORMAL DATE */
+
+    else{
+
+      date =
+      new Date(timestamp);
+
+    }
+
+    return date.toLocaleDateString(
+      "en-PH",
+      {
+        year:"numeric",
+        month:"long",
+        day:"numeric",
+        hour:"numeric",
+        minute:"2-digit"
+      }
+    );
+
+  }
+
+  catch(error){
+
+    return "Invalid date";
+
+  }
+
+}
+
+/* =========================
+   RENDER DOCUMENTS
+========================= */
+
+function renderDocuments(data){
+
+  container.innerHTML = "";
+
+  if(data.length === 0){
+
+    container.innerHTML = `
+      <div class="empty">
+        No documents found.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  data.forEach(doc=>{
+
+    const title =
+    doc.title || "Untitled";
+
+    const category =
+    doc.category || "General";
+
+    const description =
+    doc.description || "";
+
+    /* =========================
+       USE createdAt
+    ========================= */
+
+    const date =
+    formatDate(
+      doc.createdAt
+    );
+
+    const fileURL =
+    doc.fileURL || "";
+
+    container.innerHTML += `
+
+      <div class="document-card">
+
+        <h3>
+          ${title}
+        </h3>
+
+        <div class="category">
+          ${category}
+        </div>
+
+        <div class="description">
+          ${description}
+        </div>
+
+        <div class="date">
+          Uploaded:
+          ${date}
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="btn preview-btn"
+            data-url="${fileURL}"
+            data-title="${title}"
+          >
+            Preview
+          </button>
+
+          <button
+            class="btn download-btn"
+            onclick="downloadFile(
+              '${fileURL}',
+              '${title}'
+            )"
+          >
+            Download
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+  attachPreviewEvents();
+
+}
+
+/* =========================
+   PREVIEW EVENTS
+========================= */
+
+function attachPreviewEvents(){
+
+  const buttons =
+  document.querySelectorAll(
+    ".preview-btn"
+  );
+
+  buttons.forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        const url =
+        button.dataset.url;
+
+        const title =
+        button.dataset.title;
+
+        openPreview(
+          url,
+          title
+        );
+
+      }
+    );
+
+  });
+
+}
+
+/* =========================
+   OPEN PREVIEW
+========================= */
+
+function openPreview(
+  url,
+  title
+){
+
+  if(!url){
+
+    alert(
+      "File URL not found."
+    );
+
+    return;
+
+  }
+
+  previewTitle.textContent =
+  title || "Preview";
+
+  modal.style.display =
+  "flex";
+
+  previewFrame.src = "";
+
+  const lowerURL =
+  url.toLowerCase();
+
+  /* PDF */
+
+  if(lowerURL.includes(".pdf")){
+
+    previewFrame.src =
+    "https://docs.google.com/gview?embedded=true&url=" +
+    encodeURIComponent(url);
+
+  }
+
+  /* GOOGLE DOCS */
+
+  else if(
+    lowerURL.includes(
+      "docs.google.com"
+    )
+  ){
+
+    previewFrame.src =
+    url.replace(
+      "/edit",
+      "/preview"
+    );
+
+  }
+
+  /* OFFICE FILES */
+
+  else if(
+
+    lowerURL.includes(".doc")
+    ||
+
+    lowerURL.includes(".docx")
+    ||
+
+    lowerURL.includes(".ppt")
+    ||
+
+    lowerURL.includes(".pptx")
+    ||
+
+    lowerURL.includes(".xls")
+    ||
+
+    lowerURL.includes(".xlsx")
+
+  ){
+
+    previewFrame.src =
+    "https://view.officeapps.live.com/op/embed.aspx?src=" +
+    encodeURIComponent(url);
+
+  }
+
+  /* IMAGES */
+
+  else if(
+
+    lowerURL.includes(".jpg")
+    ||
+
+    lowerURL.includes(".jpeg")
+    ||
+
+    lowerURL.includes(".png")
+    ||
+
+    lowerURL.includes(".webp")
+
+  ){
+
+    previewFrame.src =
+    url;
+
+  }
+
+  /* DEFAULT */
+
+  else{
+
+    previewFrame.src =
+    url;
+
+  }
+
+}
+
+/* =========================
+   CLOSE PREVIEW
+========================= */
+
+window.closePreview =
+function(){
+
+  modal.style.display =
+  "none";
+
+  previewFrame.src = "";
+
+};
+
+/* =========================
+   CLOSE OUTSIDE CLICK
+========================= */
+
+window.addEventListener(
+  "click",
+  (e)=>{
+
+    if(
+      e.target === modal
+    ){
+
+      closePreview();
+
+    }
+
+  }
+);
+
+/* =========================
+   ESC CLOSE
+========================= */
+
+window.addEventListener(
+  "keydown",
+  (e)=>{
+
+    if(
+      e.key === "Escape"
+    ){
+
+      closePreview();
+
+    }
+
+  }
+);
+
+/* =========================
+   DOWNLOAD FILE
+========================= */
+
+window.downloadFile =
+async function(
+  url,
+  title
+){
+
+  try{
+
+    const response =
+    await fetch(url);
+
+    const blob =
+    await response.blob();
+
+    const blobURL =
+    window.URL.createObjectURL(blob);
+
+    const extension =
+    getFileExtension(url);
+
+    const a =
+    document.createElement("a");
+
+    a.href =
+    blobURL;
+
+    a.download =
+    `${sanitizeFileName(title)}.${extension}`;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    window.URL.revokeObjectURL(
+      blobURL
+    );
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    alert(
+      "Failed to download file."
+    );
+
+  }
+
+};
+
+/* =========================
+   FILE EXTENSION
+========================= */
+
+function getFileExtension(url){
+
+  const cleanURL =
+  url.split("?")[0];
+
+  const parts =
+  cleanURL.split(".");
+
+  return parts.pop() || "file";
+
+}
+
+/* =========================
+   SANITIZE FILE NAME
+========================= */
+
+function sanitizeFileName(name){
+
+  return name.replace(
+    /[\\/:*?"<>|]/g,
+    "_"
+  );
+
+}
+
+/* =========================
+   START
+========================= */
+
+loadDocuments();
+</script>
+
+<script>
+/* ================================
+   TRANSPARENCY HUB FILTER SCRIPT
+================================ */
+
+const searchInput =
+document.getElementById(
+  "searchInput"
+);
+
+const categoryFilter =
+document.getElementById(
+  "categoryFilter"
+);
+
+/* ================================
+   FILTER DOCUMENTS
+================================ */
+
+function filterDocuments(){
+
+  const searchValue =
+  searchInput.value
+  .toLowerCase()
+  .trim();
+
+  const selectedCategory =
+  categoryFilter.value;
+
+  const cards =
+  document.querySelectorAll(
+    ".document-card"
+  );
+
+  let visibleCount = 0;
+
+  cards.forEach(card=>{
+
+    const title =
+    card.querySelector("h3")
+    ?.textContent
+    .toLowerCase() || "";
+
+    const description =
+    card.querySelector(".description")
+    ?.textContent
+    .toLowerCase() || "";
+
+    const category =
+    card.querySelector(".category")
+    ?.textContent
+    .trim() || "";
+
+    /* SEARCH MATCH */
+
+    const matchSearch =
+
+      title.includes(searchValue)
+
+      ||
+
+      description.includes(searchValue);
+
+    /* CATEGORY MATCH */
+
+    const matchCategory =
+
+      selectedCategory === "all"
+
+      ||
+
+      category === selectedCategory;
+
+    /* SHOW / HIDE */
+
+    if(
+      matchSearch &&
+      matchCategory
+    ){
+
+      card.style.display =
+      "block";
+
+      visibleCount++;
+
+    }
+
+    else{
+
+      card.style.display =
+      "none";
+
+    }
+
+  });
+
+  /* EMPTY STATE */
+
+  const existingEmpty =
+  document.querySelector(
+    ".filter-empty"
+  );
+
+  if(existingEmpty){
+
+    existingEmpty.remove();
+
+  }
+
+  if(visibleCount === 0){
+
+    container.innerHTML += `
+      <div class="empty filter-empty">
+        No matching documents found.
+      </div>
+    `;
+
+  }
+
+}
+
+/* ================================
+   EVENT LISTENERS
+================================ */
+
+searchInput.addEventListener(
+  "input",
+  filterDocuments
+);
+
+categoryFilter.addEventListener(
+  "change",
+  filterDocuments
+);
+</script>
+
+<script src="/updater.js"></script>
+<script src="/assets/js/offline_cache.js"></script>
+<script src="/assets/js/block_inspect.js"></script>
+<script type="module" src="/assets/js/maintenance.js"></script>
+</body>
+</html>

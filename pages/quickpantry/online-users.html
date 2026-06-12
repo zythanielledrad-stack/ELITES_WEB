@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Live Users</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+  }
+
+  .wrap {
+    padding: 10px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .clear-btn {
+    background: #dc2626;
+    border: none;
+    color: white;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .clear-btn:hover {
+    background: #b91c1c;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    background: #111827;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    border-bottom: 1px solid #1f2937;
+  }
+
+  th {
+    background: #1f2937;
+    text-align: left;
+  }
+
+  .online {
+    color: #22c55e;
+    font-weight: bold;
+  }
+
+  .offline {
+    color: #ef4444;
+    font-weight: bold;
+  }
+
+  .kick-btn {
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .kick-btn:hover {
+    background: #dc2626;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <h3>🟢 Live Users</h3>
+
+    <button class="clear-btn" onclick="clearAllUsers()">
+      Clear All
+    </button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="list"></tbody>
+  </table>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  query,
+  where
+}
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+/* FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyAmzy_8B2h_sTtAKE2dVgfl2K-OXd5TVZg",
+  authDomain: "voting-890f2.firebaseapp.com",
+  projectId: "voting-890f2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const list = document.getElementById("list");
+
+/* LIVE USERS */
+onSnapshot(collection(db, "active_session"), async (snap) => {
+
+  if (snap.empty) {
+
+    list.innerHTML = `
+      <tr>
+        <td colspan="4">
+          No users
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  const rows = await Promise.all(
+
+    snap.docs.map(async (d) => {
+
+      const data = d.data();
+
+      /* FIND STUDENT NAME */
+      let studentName = "Unknown";
+
+      try {
+
+        const q = query(
+          collection(db, "students"),
+          where("studentNumber", "==", data.studentNumber)
+        );
+
+        const studentSnap = await getDocs(q);
+
+        if (!studentSnap.empty) {
+
+          const studentData =
+            studentSnap.docs[0].data();
+
+          studentName =
+            studentData.name ||
+            studentData.fullName ||
+            "No Name";
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+      }
+
+      const isOnline =
+        data.loggedIn &&
+        !data.forceLogout;
+
+      return `
+        <tr>
+
+          <td>
+            ${studentName}
+          </td>
+
+          <td>
+            ${data.studentNumber}
+          </td>
+
+          <td class="${
+            isOnline
+              ? "online"
+              : "offline"
+          }">
+
+            ${
+              isOnline
+                ? "ONLINE"
+                : "OFFLINE"
+            }
+
+          </td>
+
+          <td>
+
+            <button
+              class="kick-btn"
+              onclick="kick('${data.studentNumber}')"
+            >
+              Kick
+            </button>
+
+          </td>
+
+        </tr>
+      `;
+    })
+
+  );
+
+  list.innerHTML = rows.join("");
+
+});
+
+/* KICK USER */
+window.kick = async function(studentNumber) {
+
+  const confirmKick =
+    confirm(`Kick ${studentNumber}?`);
+
+  if (!confirmKick) return;
+
+  await setDoc(
+    doc(db, "active_session", studentNumber),
+    {
+      studentNumber,
+      loggedIn: false,
+      forceLogout: true,
+      updatedAt: Date.now()
+    },
+    { merge: true }
+  );
+
+  alert("Kicked: " + studentNumber);
+};
+
+/* CLEAR ALL USERS */
+window.clearAllUsers = async function() {
+
+  const confirmClear =
+    confirm("Clear ALL active sessions?");
+
+  if (!confirmClear) return;
+
+  const snap = await getDocs(
+    collection(db, "active_session")
+  );
+
+  const promises = snap.docs.map((d) =>
+    deleteDoc(d.ref)
+  );
+
+  await Promise.all(promises);
+
+  alert("All sessions cleared.");
+};
+
+</script>
+
+</body>
+</html>

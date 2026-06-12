@@ -1,0 +1,25 @@
+{
+  "name": "elites",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "School Profile Website for ELITES, HAZZY.EXE",
+  "main": "events.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@upstash/redis": "^1.37.0",
+    "@vercel/blob": "^2.4.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^7.2.5",
+    "fs": "^0.0.1-security",
+    "resend": "^3.2.1"
+  }
+}

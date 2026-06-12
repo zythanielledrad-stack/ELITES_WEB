@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0f172a;
+  --card:#111827;
+  --accent:#3b82f6;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter;
+}
+
+
+body{
+  background:
+    url("#") center center no-repeat,
+    linear-gradient(135deg,#0f172a,#1e293b);
+
+  background-size:350px;
+  background-attachment:fixed;
+
+  color:var(--text);
+  min-height:100vh;
+  user-select:none;
+}
+/* ================= LAYOUT ================= */
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+  background:rgba(17,24,39,.9);
+  border:1px solid rgba(59,130,246,.2);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:20px;
+  backdrop-filter:blur(10px);
+}
+
+.h2{
+  color:#111827;
+}
+
+h1,h2,h3{
+  margin-bottom:10px;
+}
+
+p{
+  color:var(--muted);
+}
+
+/* ================= INPUT ================= */
+
+input{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  background:#0b1220;
+  color:white;
+}
+
+/* ================= BUTTON ================= */
+
+button{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:var(--accent);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* ================= GRID ================= */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:15px;
+}
+
+/* ================= FILE CARD ================= */
+
+.file-card{
+  background:#0b1220;
+  border:1px solid rgba(148,163,184,.2);
+  border-radius:14px;
+  padding:15px;
+  transition:.2s;
+}
+
+.file-card:hover{
+  transform:translateY(-2px);
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 10px;
+  font-size:12px;
+  border-radius:999px;
+  background:rgba(59,130,246,.2);
+  color:#60a5fa;
+  margin-bottom:8px;
+}
+
+/* ================= PROFESSIONAL RESPONSIVE TOPBAR ================= */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:999;
+
+  width:100%;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:20px;
+
+  padding:18px 24px;
+  margin-bottom:24px;
+
+  background:rgba(15,23,42,.92);
+
+  backdrop-filter:blur(14px);
+
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.25);
+
+  flex-wrap:wrap;
+}
+
+/* ================= LEFT TITLE ================= */
+
+.topbar-title{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.topbar-title h2{
+  margin:0;
+
+  font-size:22px;
+  font-weight:700;
+
+  color:#ffffff;
+}
+
+.topbar-title span{
+  font-size:13px;
+  color:#94a3b8;
+}
+
+/* ================= RIGHT ACTIONS ================= */
+
+.nav-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+/* ================= GLOBAL BUTTON ================= */
+
+.nav-btn{
+  width:auto !important;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:8px;
+
+  min-height:46px;
+
+  padding:12px 18px;
+
+  border:none;
+  border-radius:12px;
+
+  font-size:14px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:
+    transform .2s ease,
+    background .2s ease,
+    box-shadow .2s ease;
+
+  white-space:nowrap;
+}
+
+/* ================= HOVER ================= */
+
+.nav-btn:hover{
+  transform:translateY(-1px);
+}
+
+/* ================= ACTIVE ================= */
+
+.nav-btn:active{
+  transform:scale(.98);
+}
+
+/* ================= UPLOAD ================= */
+
+.upload-trigger{
+  background:#2563eb;
+  color:white;
+
+  box-shadow:
+    0 6px 18px rgba(37,99,235,.25);
+}
+
+.upload-trigger:hover{
+  background:#1d4ed8;
+}
+
+/* ================= REFRESH ================= */
+
+.refresh-btn{
+  background:#111827;
+  color:#e5e7eb;
+
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.refresh-btn:hover{
+  background:#1f2937;
+}
+
+/* ================= TRANSPARENCY ================= */
+
+.transparency-btn{
+  background:#052e16;
+  color:#bbf7d0;
+
+  border:1px solid rgba(34,197,94,.2);
+}
+
+.transparency-btn:hover{
+  background:#064e3b;
+}
+
+/* ================= LOGOUT ================= */
+
+.logout{
+  background:#7f1d1d;
+  color:#fecaca;
+
+  border:1px solid rgba(239,68,68,.2);
+}
+
+.logout:hover{
+  background:#991b1b;
+}
+
+/* ================================================= */
+/* ================= TABLET VIEW =================== */
+/* ================================================= */
+
+@media (max-width: 900px){
+
+  .topbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .topbar-title{
+    text-align:center;
+    align-items:center;
+  }
+
+  .nav-actions{
+    width:100%;
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+  }
+
+  .nav-btn{
+    width:100% !important;
+  }
+
+}
+
+/* ================================================= */
+/* ================= MOBILE VIEW =================== */
+/* ================================================= */
+
+@media (max-width: 520px){
+
+  .topbar{
+    padding:16px;
+    border-radius:16px;
+  }
+
+  .topbar-title h2{
+    font-size:19px;
+    text-align:center;
+    line-height:1.4;
+  }
+
+  .topbar-title span{
+    text-align:center;
+  }
+
+  .nav-actions{
+    grid-template-columns:1fr;
+  }
+
+  .nav-btn{
+    width:100% !important;
+
+    min-height:50px;
+
+    font-size:14px;
+  }
+
+}
+
+/* ================= TOUCH DEVICES ================= */
+
+@media (hover:none){
+
+  .nav-btn:hover{
+    transform:none;
+  }
+
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.modal-box{
+  width:95%;
+  height:90vh;
+  background:#020617;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+}
+
+/* HEADER */
+
+.modal-header{
+  height:55px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 15px;
+  background:#0f172a;
+}
+
+/* FRAME */
+
+iframe{
+  width:100%;
+  height:calc(100% - 55px);
+  border:none;
+}
+
+
+/* ================= WATERMARK ================= */
+
+.watermark{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:10;
+}
+
+.watermark span{
+  position:absolute;
+  color:rgba(255,255,255,.06);
+  font-size:20px;
+  transform:rotate(-30deg);
+}
+
+/* LOGIN CENTER */
+
+.login-box{
+  max-width:450px;
+  margin:100px auto;
+}
+
+#viewerLock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+#wm {
+  position: absolute;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+.disclaimer-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.disclaimer-box {
+  background: white;
+  padding: 25px;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 12px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.disclaimer-box h2 {
+  margin-bottom: 10px;
+}
+
+.disclaimer-box p {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.disclaimer-box button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: #111;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.disclaimer-box button:hover {
+  background: #333;
+}
+
+.login-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader-box {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 200px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 10px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #111;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader-box p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+    .footer {
+      padding: 3px 10px;
+    }
+
+    .logos-container {
+      flex-direction: row;
+      gap: 15px;
+    }
+
+    .logo-item {
+      min-width: 200px;
+    }
+
+    .logo-item img {
+      height: 60px;
+      max-width: 140px;
+    }
+
+    .logo-label {
+      font-size: 12px;
+    }
+
+    .footer-text {
+      font-size: 14px;
+      text-align: center;
+    }
+  
+
+  /* 🛠️ FIX: Prevent footer overlap */
+  @media (max-height: 600px) {
+    .container {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+    }
+    
+    .footer {
+      padding: 20px 16px;
+    }
+  }
+
+  /* 🎯 PERFECT TOUCH TARGETS */
+  @media (hover: none) and (pointer: coarse) {
+    .logo-item img {
+      transition: none;
+    }
+  }
+    /* 🆕 FOOTER STYLES */
+  .footer {
+    background: linear-gradient(135deg, #1e3a8a 0%, #0c2348 100%);
+    color: white;
+    padding: 15px 10px;
+    margin-top: auto;
+    text-align: center;
+  }
+
+  .footer-content {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .logos-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .logo-item {
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .logo-item img {
+    height: 70px;
+    width: auto;
+    max-width: 160px;
+    max-height: 80px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    object-fit: contain;
+  }
+
+  .logo-item img:hover {
+    transform: scale(1.05) translateY(-5px);
+  }
+
+  .logo-label {
+    font-size: 13px;
+    margin-top: 12px;
+    opacity: 0.95;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 15px;
+    opacity: 0.95;
+    max-width: 500px;
+    line-height: 1.6;
+    font-weight: 500;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+    /* 🛠️ FIX: Prevent footer overlap */
+    @media (max-height: 600px) {
+      .container {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+      }
+      
+      .footer {
+        padding: 20px 16px;
+      } 
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* ================= UPLOAD MODAL ONLY ================= */
+#uploadModal.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  padding:15px;
+}
+
+/* 🔥 UNIQUE BOX (NO CONFLICT WITH OTHER MODAL) */
+#uploadModal .upload-modal-box {
+  width:100%;
+  max-width:450px;
+
+  background:#ffffff;
+  border-radius:14px;
+
+  padding:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+
+  transform:translateY(10px);
+  animation:uploadSlideUp 0.25s ease forwards;
+}
+
+/* animation ONLY for upload modal */
+@keyframes uploadSlideUp {
+  to {
+    transform:translateY(0);
+  }
+}
+
+/* ================= UPLOAD TITLE ================= */
+#uploadModal .upload-modal-box h3 {
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:14px;
+  color:#222;
+}
+
+/* ================= INPUTS ONLY ================= */
+#uploadModal .upload-modal-box input,
+#uploadModal .upload-modal-box textarea,
+#uploadModal .upload-modal-box select {
+  width:100%;
+  padding:10px 12px;
+  margin-top:10px;
+
+  border:1px solid #e5e7eb;
+  border-radius:8px;
+
+  font-size:14px;
+  outline:none;
+  transition:0.2s;
+}
+
+#uploadModal .upload-modal-box input:focus,
+#uploadModal .upload-modal-box textarea:focus,
+#uploadModal .upload-modal-box select:focus {
+  border-color:#4f46e5;
+  box-shadow:0 0 0 3px rgba(79,70,229,0.15);
+}
+
+
+
+/* ================= PROGRESS CONTAINER ================= */
+.progress-container {
+  width: 100%;
+  height: 10px;
+
+  background: #f1f5f9;
+  border-radius: 999px;
+
+  margin-top: 16px;
+
+  overflow: hidden;
+  position: relative;
+}
+
+/* ================= PROGRESS BAR ================= */
+#progressBar {
+  height: 100%;
+  width: 0%;
+
+  background: linear-gradient(
+    90deg,
+    #4f46e5,
+    #22c55e
+  );
+
+  border-radius: 999px;
+
+  transition: width 0.25s ease;
+}
+
+/* ================= PROGRESS TEXT ================= */
+#progressText {
+  display: block;
+  margin-top: 6px;
+
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ================= SIGNUP IFRAME MODAL ================= */
+
+.signup-frame-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.signup-frame-modal.hidden {
+  display: none;
+}
+
+.signup-frame-box {
+  width: 95%;
+  max-width: 500px;
+  height: 90vh;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.signup-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.signup-frame-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+
+
+
+</style>
+</head>
+ <!-- ================= LOADERS ================= -->
+<div id="loginLoader" class="login-loader">
+  <div class="loader-box">
+    <div class="spinner"></div>
+    <p>Logging in...</p>
+  </div>
+</div>
+
+<!-- ================= DISCLAIMER ================= -->
+<div id="disclaimerModal" class="disclaimer-modal">
+  <div class="disclaimer-box">
+    <h2 style="color: #ff0000;">⚠️ Disclaimer</h2>
+
+    <p>
+      By using this system, you agree that all activities are monitored.
+      Unauthorized access, copying, or misuse of files is strictly prohibited.
+    </p>
+
+    <button onclick="acceptDisclaimer()">I Understand</button>
+  </div>
+</div>
+
+<div id="viewerLock"></div>
+
+<body oncontextmenu="return false">
+
+  
+
+  <!-- ================= LOGIN ================= -->
+<div class="container">
+  <!-- LOGIN -->
+<div id="loginPage" class="login-box card">
+  <h2>Quick Resources Pantry</h2>
+  <p>Enter your student number / Registration Number</p>
+  <br>
+  <p>Use the Following Format: <strong>XXL-XXXXXX / XX-XXXX</strong></p>
+
+  <input id="studentNumber" 
+  style="width: 100%; 
+  padding: 10px; 
+  margin-bottom: 10px; 
+  border-radius: 6px; 
+  border: 1px solid #ccc; 
+  font-weight: bold" 
+  placeholder="Student Number">
+
+  <br><br>
+
+  <!-- 🔐 CAPTCHA WRAPPER (IMPORTANT) -->
+  <div id="captchaBox">
+    <div class="g-recaptcha" data-sitekey="6Le1Rf0sAAAAAJi_E4p48MtHT0F5rF2K1wzfAghj"></div>
+  </div>
+
+  <button onclick="loginStudent()">Login</button>
+  <!-- ================= SIGNUP LINK ================= -->
+<p style="margin-top:12px; font-size:14px; text-align:center; color:#64748b;">
+  Don’t have an account?
+  <a href="#" onclick="openSignupFrame(event)"
+     style="color:#2563eb; font-weight:600; text-decoration:none;">
+    Sign up here
+  </a>
+</p>
+</div>
+
+
+<!-- ================= SIGNUP IFRAME MODAL ================= -->
+<div id="signupFrameModal" class="signup-frame-modal hidden">
+
+  <div class="signup-frame-box">
+
+    <button class="signup-frame-close" onclick="closeSignupFrame()">✖</button>
+
+    <iframe
+      src="signup.html"
+      class="signup-frame"
+    ></iframe>
+
+  </div>
+
+</div>
+
+<!-- ================= MAIN PORTAL ================= -->
+  <!-- PORTAL -->
+  <div id="portalPage" style="display:none;">
+
+  <div class="topbar">
+
+    <!-- LEFT -->
+    <div class="topbar-title">
+      <h2>📚 Quick Resources Pantry</h2>
+      <span>Student Resource System</span>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="nav-actions">
+
+      <button
+        class="nav-btn upload-trigger"
+        onclick="openUploadModal()">
+        ⬆ Upload File
+      </button>
+
+      <button
+        class="nav-btn refresh-btn"
+        onclick="refreshSession()">
+        🔄 Refresh Session
+      </button>
+
+      <button
+        class="nav-btn transparency-btn"
+        onclick="window.open('/pages/transparency/transparency_user.html', '_blank')">
+        📂 Transparency Hub
+      </button>
+
+      <button
+        class="nav-btn logout"
+        onclick="logoutStudent()">
+        🚪 Logout
+      </button>
+
+    </div>
+
+  </div>
+    <!-- INFO -->
+    <div class="card">
+      <h3>👤 Student Info</h3>
+      <p id="studentInfo"></p>
+    </div>
+<!-- ================= SEARCH ================= -->
+    <input type="text" id="searchInput" placeholder="Search title..." oninput="applyFilters()"/>
+<br>
+<br>
+<!-- ================= FILES ================= -->
+    <!-- FILES -->
+    <div class="card">
+      <h3>📂 Files</h3>
+      <div class="grid" id="fileList"></div>
+    </div>
+  </div>
+</div>
+<!-- ================= FILE PREVIEW MODAL  ================= -->
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+
+    <div class="watermark" id="wm"></div>
+
+    <div class="modal-header">
+      <span id="title"></span>
+      <button onclick="closePreview()">Close</button>
+    </div>
+
+    <iframe id="frame"></iframe>
+  </div>
+</div>
+
+
+<!-- ================= UPLOAD MODAL  ================= -->
+ <div id="uploadModal" class="modal">
+  <div class="upload-modal-box">
+
+    <h3>Upload File</h3>
+
+    <input id="fileTitle" placeholder="Title" />
+    <textarea id="fileDescription" placeholder="Description"></textarea>
+
+    <select id="fileCategory">
+      <option value="module">Module</option>
+      <option value="reviewer">Reviewer</option>
+      <option value="notes">Notes</option>
+      <option value="activity">Activity</option>
+    </select>
+
+    <input type="file" id="fileInput" />
+
+    <div class="progress-container">
+      <div id="progressBar"></div>
+      <span id="progressText">0%</span>
+    </div>
+
+    <button onclick="uploadFile()">Upload</button>
+    <button onclick="closeUploadModal()">Cancel</button>
+
+
+    <p style="font-size:12px;color:#666;margin-top:10px;">
+      Please do not close this window while uploading.
+    </p>
+  </div>
+</div>
+
+
+  <!-- 🆕 FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="logos-container">
+        <div class="logo-item">
+        <img preload src="/assets/images/SLSU_Logo.png">
+        <div class="logo-label">
+          SOUTHERN LUZON STATE UNIVERSITY
+        </div>
+      </div>
+
+      <div class="logo-item">
+        <img preload src="/assets/images/favicon_v2.jpg">
+        <div class="logo-label">
+          ENSEMBLES OF LIVELIHOOD TECHNOLOGY STUDENTS (ELITES)
+        </div>
+      </div>
+
+      <div class="logo-item">
+        <img preload src="/assets/images/CTE.png">
+        <div class="logo-label">
+          COLLEGE OF TEACHER EDUCATION
+        </div>
+      </div>
+      </div>
+          <p><i class="footer-text"></i> Copyright 2026 by EDRAD, ZYTHANIEL. | All rights reserved.|
+            <!--<button id="tipBtn" style="background: #0000f8; color: white; border: none; padding: 10px 14px; border-radius: 1px; cursor: pointer;">💖 Support / Tip</button>-->
+            <!--<a href="#" rel="sponsored" target="_parent">Open Source</a></p>-->
+        </div>
+      </div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+function openSignupFrame(e) {
+  e.preventDefault();
+  document.getElementById("signupFrameModal").classList.remove("hidden");
+}
+
+function closeSignupFrame() {
+  document.getElementById("signupFrameModal").classList.add("hidden");
+}
+</script>
+
+  <script>
+  window.openUploadModal = function () {
+  document.getElementById("uploadModal").style.display = "flex";
+};
+
+window.closeUploadModal = function () {
+  document.getElementById("uploadModal").style.display = "none";
+};</script>
+
+<script type="module" src="/assets/js/pantrytest.js"></script> 
+<script type="module" src="/assets/js/maintenance.js"></script>
+<script src="/updater.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="/assets/js/offline_cache.js"></script>
+<script src="/assets/js/block_inspect.js"></script>
+
+
+
+
+</body>
+</html>

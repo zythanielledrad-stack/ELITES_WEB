@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELITES Community Access</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+
+    background:
+        linear-gradient(
+            rgba(15,23,42,.55),
+            rgba(15,23,42,.55)
+        ),
+        url('/assets/images/bg.png');
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+}
+
+/* CARD */
+.container{
+    width:100%;
+    max-width:520px;
+    background:#fff;
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+
+/* LOGO */
+.logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-bottom:15px;
+}
+.logo-img{
+    width:65px;
+    height:65px;
+    object-fit:contain;
+}
+
+/* TITLE */
+h1{
+    text-align:center;
+    font-size:20px;
+    color:#0f172a;
+    margin-bottom:6px;
+}
+.subtitle{
+    text-align:center;
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:18px;
+}
+
+/* STEPS */
+.steps{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+}
+.step{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:12px;
+    font-weight:700;
+    background:#e5e7eb;
+    color:#64748b;
+}
+.step.active{
+    background:#2563eb;
+    color:#fff;
+}
+.step.done{
+    background:#16a34a;
+    color:#fff;
+}
+.line{
+    width:25px;
+    height:2px;
+    background:#e5e7eb;
+}
+
+/* INPUTS */
+.input-group{
+    margin-bottom:12px;
+}
+label{
+    font-size:12px;
+    font-weight:600;
+    color:#334155;
+}
+
+.student-input{
+    display:flex;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    overflow:hidden;
+}
+.prefix{
+    background:#f1f5f9;
+    padding:12px;
+    font-weight:600;
+}
+.student-input input{
+    flex:1;
+    border:none;
+    padding:12px;
+}
+.student-input input:focus{outline:none;}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+}
+
+#ln,
+#fn,
+#mn,
+#addr{
+    text-transform: uppercase;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+}
+button:hover{background:#1d4ed8;}
+
+/* RESULT */
+#result{
+    margin-top:15px;
+    text-align:center;
+}
+.success{color:#16a34a;font-weight:600;}
+.error{color:#dc2626;font-weight:600;}
+.loading{color:#2563eb;}
+
+/* FORM */
+.form-box{
+    margin-top:10px;
+    padding:15px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    background:#f9fafb;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+}
+
+.chat-bubble{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#092851,#0A58CA);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-decoration:none;
+    box-shadow:0 10px 25px rgba(24,119,242,.35);
+    transition:all .1s ease;
+    z-index:9999;
+    animation:pulse 1s infinite;
+}
+
+.chat-bubble:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:0 15px 35px rgba(24,119,242,.45);
+}
+
+.chat-icon{
+    font-size:30px;
+    color:#fff;
+}
+
+.chat-tooltip{
+    position:absolute;
+    right:80px;
+    background:#fff;
+    color:#0f172a;
+    padding:10px 14px;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+    opacity:0;
+    visibility:hidden;
+    transform:translateX(10px);
+    transition:.25s;
+}
+
+.chat-tooltip small{
+    font-size:11px;
+    color:#64748b;
+    font-weight:500;
+}
+
+.chat-bubble:hover .chat-tooltip{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(0);
+}
+
+/* pulse animation */
+@keyframes pulse{
+    0%{
+        box-shadow:0 0 0 0 rgba(37,99,235,0.6);
+    }
+    70%{
+        box-shadow:0 0 0 15px rgba(37,99,235,0);
+    }
+    100%{
+        box-shadow:0 0 0 0 rgba(37,99,235,0);
+    }
+}
+
+.preview-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+.preview-table th,
+.preview-table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+}
+
+.preview-table th{
+    width:180px;
+    background:#f5f5f5;
+    font-weight:600;
+}
+
+.preview-table tr:nth-child(even){
+    background:#fafafa;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.button-group button{
+    flex:1;
+}
+
+.steps{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+
+.step-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    font-size:12px;
+}
+
+.step{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#ddd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.step.active{
+    background:#4CAF50;
+    color:white;
+}
+
+.step.done{
+    background:#2196F3;
+    color:white;
+}
+
+.line{
+    width:40px;
+    height:2px;
+    background:#ccc;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Messenger Support Button -->
+<a class="chat-bubble"
+   href="https://www.messenger.com/e2ee/t/23939356665733567"
+   target="_blank"
+   aria-label="Contact ELITES Support">
+
+    <span class="chat-icon">💬</span>
+
+    <div class="chat-tooltip">
+        Need Help?<br>
+        <small>Contact ELITES President</small>
+    </div>
+
+</a>
+<div class="container">
+
+<!-- STEPS -->
+<div class="steps">
+
+    <div class="step-container">
+        <div class="step active" id="s1">1</div>
+        <p>Verify</p>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="step-container">
+        <div class="step" id="s2">2</div>
+        <p>Register</p>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="step-container">
+        <div class="step" id="s3">3</div>
+        <p>Preview</p>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="step-container">
+        <div class="step" id="s4">4</div>
+        <p>Confirm & Join</p>
+    </div>
+
+</div>
+
+<div class="logo">
+    <img src="/assets/images/SLSU_Logo.png" class="logo-img">
+    <img src="/assets/images/favicon_v2.jpg" class="logo-img">
+    <img src="/assets/images/CTE.png" class="logo-img">
+</div>
+
+<h1>Ensemble of LIvelihood and TEchnology Students </h1>
+<center><h5>Community Group Chat Access</h5></center>
+<p class="subtitle"></p>
+
+<div id="result"></div>
+
+<!-- STEP 1 -->
+<div id="step1">
+    <div class="input-group">
+        <label>Student /Examination Number</label>
+        <div class="student-input">
+            <span class="prefix">2026-</span>
+            <input id="studentNumber" maxlength="6" placeholder="000000">
+        </div>
+    </div>
+
+    <button onclick="verify()">Verify</button>
+</div>
+
+</div>
+
+<script>
+
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQlhkjeuRkHeuRW0oDIEtjm0bwvNv3wMBMeFn-Pgfeu4e3cJSZpnzJFcaNNLPFXUZk-H865xMdzwuLz/pub?gid=0&single=true&output=csv";
+
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxeMi5Vf5BcB1tf-fYk7OEAT7jfcVeecZjc55LPrIuL8Cy-mjpDYOcaBW4ghFlwwbmshg/exec";
+
+const GC_LINK = "https://m.me/cm/AbbJR_jeKIOI7Tq1/";
+
+let studentID = "";
+let formData = {};
+
+let privacyConsent = "";
+let consentTimestamp = "";
+
+/* STEP UI */
+function setStep(n){
+    for(let i=1;i<=4;i++){
+        let el = document.getElementById("s"+i);
+        el.className = i<n ? "step done" : i===n ? "step active" : "step";
+    }
+}
+
+/* STEP 1 VERIFY */
+async function verify(){
+
+    let suffix = document.getElementById("studentNumber").value.trim();
+
+    if(!suffix){
+        show("Enter student number","error");
+        return;
+    }
+
+    studentID = "2026-" + suffix.padStart(4,"0");
+
+    show("Checking...","loading");
+
+    try{
+
+        // CHECK IF STUDENT EXISTS IN SHEET1
+        let res = await fetch(CSV_URL);
+        let data = await res.text();
+
+        let rows = data.trim().split("\n");
+
+        let found = rows.some(r =>
+            r.toUpperCase().includes(studentID.toUpperCase())
+        );
+
+        if(!found){
+            show("❌ Student / Examination number not found.","error");
+            return;
+        }
+
+        // CHECK IF ALREADY REGISTERED IN DATA SHEET
+        const checkRes = await fetch(
+            WEB_APP_URL +
+            "?action=check&studentNumber=" +
+            encodeURIComponent(studentID)
+        );
+
+        const checkData = await checkRes.json();
+
+        // IF ALREADY REGISTERED
+        if(checkData.registered){
+
+            document.getElementById("step1").style.display = "none";
+
+            document.getElementById("result").innerHTML = `
+                <div class="form-box">
+
+                    <h2 style="color:#16a34a;">
+                        ✅ Already Registered
+                    </h2>
+
+                    <p style="
+                        margin-top:10px;
+                        color:#475569;
+                    ">
+                        Welcome back,
+                    </p>
+
+                    <h3 style="
+                        margin-top:10px;
+                        color:#0f172a;
+                    ">
+                        ${checkData.fullname}
+                    </h3>
+
+                    <p style="
+                        margin-top:10px;
+                        color:#64748b;
+                    ">
+                        Your registration has already been completed.
+                        You may now access the ELITES Community Group Chat.
+                    </p>
+
+                    <div class="button-group">
+
+                        <button onclick="copyLink()">
+                            📋 Copy Group Chat Link
+                        </button>
+
+                        <button onclick="redirectToGC()">
+                            🚀 Join Community GC
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+            setStep(4);
+            return;
+        }
+
+        // NOT YET REGISTERED → SHOW PRIVACY NOTICE
+        document.getElementById("result").innerHTML = `
+            <div class="form-box">
+
+                <h3>📄 Data Privacy Notice</h3>
+
+                <p style="
+                    margin-top:10px;
+                    text-align:left;
+                    line-height:1.6;
+                ">
+                    In accordance with the Data Privacy Act of 2012
+                    (RA 10173), ELITES will collect and process your
+                    personal information solely for registration,
+                    verification, organizational records, and
+                    community group chat access.
+                </p>
+
+                <div class="button-group">
+                    <button onclick="acceptPrivacy()">
+                        I Agree
+                    </button>
+
+                    <button onclick="location.reload()">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        `;
+
+        setStep(2);
+
+    }catch(error){
+
+        console.error(error);
+
+        show(
+            "Unable to verify at the moment. Please try again later.",
+            "error"
+        );
+    }
+}
+
+function acceptPrivacy(){
+
+    privacyConsent = "AGREED";
+    consentTimestamp = new Date().toISOString();
+
+    showForm();
+}
+
+/* STEP 2 FORM */
+function showForm(){
+
+    document.getElementById("step1").style.display="none";
+
+    setStep(2);
+
+    document.getElementById("result").innerHTML = `
+        <div class="form-box">
+
+        <div class="row">
+            <input id="ln" placeholder="Last Name">
+            <input id="fn" placeholder="First Name">
+        </div>
+
+        <input id="mn" placeholder="Middle Name (leave blank if none)">
+        <input id="addr" placeholder="Address">
+        <input id="birthdate" type="date">
+        <input
+    id="contact"
+    type="tel"
+    placeholder="09XXXXXXXXX"
+    maxlength="11"
+    pattern="09[0-9]{9}"
+>
+
+        <select id="course">
+            <option>Course</option>
+            <option>ICT</option>
+            <option>HE</option>
+            <option>IA</option>
+        </select>
+
+        <select id="year">
+            <option>Year</option>
+            <option>1st Year</option>
+        </select>
+
+        <button onclick="preview()">Next</button>
+
+        </div>
+    `;
+}
+
+/* STEP 3 PREVIEW */
+function preview(){
+
+const lastname = document.getElementById("ln").value.trim().toUpperCase();
+const firstname = document.getElementById("fn").value.trim().toUpperCase();
+const middlename = document.getElementById("mn").value.trim().toUpperCase();
+const address = document.getElementById("addr").value.trim().toUpperCase();
+const course = document.getElementById("course").value;
+const year = document.getElementById("year").value;
+const birthdate = document.getElementById("birthdate").value;
+const contact = document.getElementById("contact").value.trim();
+const privacyConsent = "AGREED";
+const consentTimestamp = new Date().toLocaleString();
+
+if(
+    !lastname ||
+    !firstname ||
+    !address ||
+    !birthdate ||
+    !contact ||
+    course === "Course" ||
+    year === "Year"
+){
+    alert("Please complete all required fields.");
+    return;
+}
+
+if(!/^09\d{9}$/.test(contact)){
+    alert("Please enter a valid 11-digit contact number.");
+    return;
+}
+
+formData = {
+    studentNumber: studentID,
+    lastname,
+    firstname,
+    middlename,
+    address,
+    birthdate,
+    contact,
+    course,
+    year,
+    privacyConsent,
+    consentTimestamp
+};
+
+    setStep(3);
+
+ setStep(3);
+
+document.getElementById("result").innerHTML = `
+   <div class="form-box">
+
+    <h3>Preview</h3>
+
+    <table class="preview-table">
+
+        <tr>
+    <th>Privacy Consent</th>
+    <td>${formData.privacyConsent}</td>
+</tr>
+
+<tr>
+    <th>Consent Timestamp</th>
+    <td>${new Date(formData.consentTimestamp).toLocaleString()}</td>
+</tr>
+        <tr>
+            <th>Student Number</th>
+            <td>${formData.studentNumber}</td>
+        </tr>
+        <tr>
+            <th>Full Name</th>
+            <td>
+                ${formData.lastname}, ${formData.firstname}${formData.middlename ? ' ' + formData.middlename : ''}
+            </td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td>${formData.address}</td>
+        </tr>
+        <tr>
+             <th>Birthdate</th>
+            <td>${formData.birthdate}</td>
+        </tr>
+
+        <tr>
+            <th>Contact Number</th>
+            <td>${formData.contact}</td>
+        </tr>
+        <tr>
+            <th>Course & Year</th>
+            <td>${formData.course} - ${formData.year}</td>
+        </tr>
+    </table>
+
+    <div class="button-group">
+        <button type="button" onclick="goBack()">Return</button>
+        <button type="button" onclick="save()">Confirm</button>
+    </div>
+
+   </div>
+`;
+}
+/* STEP 4 SAVE */
+async function save(){
+
+    setStep(4);
+    show("Saving...","loading");
+
+    const response = await fetch(WEB_APP_URL,{
+        method:"POST",
+        body:JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if(!result.success){
+        show(result.message,"error");
+        setStep(3);
+        return;
+    }
+
+   document.getElementById("result").innerHTML = `
+    <div class="form-box">
+        <p class="success">✅ Registration Completed Successfully!</p>
+
+        <button onclick="copyLink()">
+            📋 Copy Group Chat Link
+        </button>
+
+        <button onclick="redirectToGC()">
+            🚀 Join Community GC
+        </button>
+    </div>
+`;
+let seconds = 15;
+
+const timer = setInterval(() => {
+    seconds--;
+
+    document.getElementById("countdown").innerHTML =
+        `You will be redirected to the Community GC in <strong>${seconds}</strong> seconds...`;
+
+    if(seconds <= 0){
+        clearInterval(timer);
+        window.location.href = GC_LINK;
+    }
+}, 1000);
+
+}
+
+/* UI MESSAGE */
+function show(msg,type){
+    document.getElementById("result").innerHTML =
+    `<p class="${type}">${msg}</p>`;
+}
+
+setStep(1);
+
+
+
+function copyLink() {
+    navigator.clipboard.writeText(GC_LINK)
+    .then(() => {
+        alert("Group Chat link copied successfully!");
+    })
+    .catch(() => {
+        alert("Unable to copy link.");
+    });
+}
+function redirectToGC() {
+    window.open(GC_LINK, "_blank");
+}
+
+function goBack() {
+    showForm();
+
+    document.getElementById("ln").value = formData.lastname || "";
+    document.getElementById("fn").value = formData.firstname || "";
+    document.getElementById("mn").value = formData.middlename || "";
+    document.getElementById("addr").value = formData.address || "";
+    document.getElementById("course").value = formData.course || "Course";
+    document.getElementById("year").value = formData.year || "Year";
+    document.getElementById("birthdate").value = formData.birthdate || "";
+document.getElementById("contact").value = formData.contact || "";
+}
+
+</script>
+
+<script src="/updater.js"></script>
+<script src="/assets/js/offline_cache.js"></script>
+<script src="/assets/js/block_inspect.js"></script>
+<script type="module" src="/assets/js/maintenance.js"></script>
+
+</body>
+</html>

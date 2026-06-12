@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Admin Upload - QuickPantry</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      background:#f1f5f9;
+      font-family:Arial,sans-serif;
+    }
+
+    .dashboard{
+      padding:20px;
+    }
+
+    h2{
+      margin-bottom:20px;
+    }
+
+    .container{
+      display:flex;
+      gap:20px;
+    }
+
+    .panel{
+      flex:1;
+      background:#fff;
+      border-radius:12px;
+      padding:15px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      height:80vh;
+      overflow-y:auto;
+    }
+
+    .file-card{
+      border:1px solid #eee;
+      padding:12px;
+      border-radius:10px;
+      margin-bottom:12px;
+    }
+
+    .file-card h4{
+      margin-bottom:8px;
+    }
+
+    .meta{
+      font-size:12px;
+      color:#555;
+      line-height:1.5;
+    }
+
+    .file-card p{
+      margin-top:10px;
+      font-size:14px;
+    }
+
+    .btn-group{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      border-radius:8px;
+      padding:8px 12px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .approve{
+      background:#22c55e;
+      color:white;
+    }
+
+    .reject{
+      background:#ef4444;
+      color:white;
+    }
+
+    .preview{
+      background:#3b82f6;
+      color:white;
+    }
+
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.7);
+      backdrop-filter:blur(6px);
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+    }
+
+    .modal-box{
+      width:min(1100px,95vw);
+      height:90vh;
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      display:flex;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-preview{
+      flex:2;
+      background:#111827;
+    }
+
+    #previewFrame{
+      width:100%;
+      height:100%;
+      border:none;
+      background:white;
+    }
+
+    .modal-editor{
+      flex:1;
+      background:#f8fafc;
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .modal-title{
+      font-size:20px;
+      font-weight:bold;
+    }
+
+    .modal-editor input,
+    .modal-editor textarea,
+    .modal-editor select{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #ddd;
+    }
+
+    .modal-editor textarea{
+      min-height:120px;
+      resize:none;
+    }
+
+    .file-actions{
+      display:flex;
+      gap:10px;
+    }
+
+    .download-btn,
+    .upload-btn{
+      flex:1;
+      text-align:center;
+      padding:12px;
+      border-radius:10px;
+      font-weight:bold;
+      text-decoration:none;
+      color:white;
+      cursor:pointer;
+    }
+
+    .download-btn{
+      background:#2563eb;
+    }
+
+    .upload-btn{
+      background:#f59e0b;
+    }
+
+    .modal-actions{
+      margin-top:auto;
+      display:flex;
+      gap:10px;
+    }
+
+    .modal-actions button{
+      flex:1;
+      padding:12px;
+      border-radius:10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+  <h2>📚 Teacher Approval Dashboard</h2>
+
+  <div style="margin-bottom:15px;">
+    <button onclick="clearLogs()">🧹 Clear Logs</button>
+  </div>
+
+  <div class="container">
+
+    <!-- PENDING -->
+    <div class="panel">
+
+      <h3>⏳ Pending Uploads</h3>
+
+      <div id="pendingList"></div>
+
+    </div>
+
+    <!-- LOGS -->
+    <div class="panel">
+
+      <h3>📜 Activity Logs</h3>
+
+      <div id="logList"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================= MODAL ================= -->
+
+<div id="previewModal" class="modal">
+
+  <div class="modal-box">
+
+    <!-- LEFT -->
+
+    <div class="modal-preview">
+
+      <iframe
+        id="previewFrame"
+        allowfullscreen>
+      </iframe>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="modal-editor">
+
+      <div class="modal-title">
+        Edit File
+      </div>
+
+      <input
+        id="editTitle"
+        placeholder="Title"/>
+
+      <textarea
+        id="editDescription"
+        placeholder="Description"></textarea>
+
+      <select id="editCategory">
+
+        <option value="module">Module</option>
+        <option value="reviewer">Reviewer</option>
+        <option value="notes">Notes</option>
+        <option value="activity">Activity</option>
+
+      </select>
+
+      <!-- FILE ACTIONS -->
+
+      <div class="file-actions">
+
+        <!-- DOWNLOAD -->
+
+        <a
+          id="downloadBtn"
+          class="download-btn"
+          target="_blank">
+
+          ⬇ Download
+
+        </a>
+
+        <!-- UPDATE -->
+
+        <label class="upload-btn">
+
+          ⬆ Update File
+
+          <input
+            type="file"
+            hidden
+            id="updateFileInput"
+            onchange="updateCloudinaryFile(event)">
+
+        </label>
+
+      </div>
+
+      <!-- ACTIONS -->
+
+      <div class="modal-actions">
+
+        <button
+          class="approve"
+          onclick="saveEdit()">
+
+          💾 Save
+
+        </button>
+
+        <button
+          class="reject"
+          onclick="closeModal()">
+
+          ❌ Close
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+/* ================= FIREBASE ================= */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  getDocs,
+  doc
+}
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+/* ================= FIREBASE CONFIG ================= */
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAmzy_8B2h_sTtAKE2dVgfl2K-OXd5TVZg",
+  authDomain: "voting-890f2.firebaseapp.com",
+  projectId: "voting-890f2",
+  storageBucket: "voting-890f2.firebasestorage.app",
+  messagingSenderId: "537631858085",
+  appId: "1:537631858085:web:aa1cc4b76f40a0bce21c4c"
+
+};
+
+/* ================= INIT ================= */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* ================= CLOUDINARY ================= */
+
+const CLOUD_NAME = "dou3k8w8r";
+const UPLOAD_PRESET = "quickpantry_uploads"; // 🔴 REQUIRED
+
+/* ================= STATE ================= */
+
+let currentId = null;
+let currentData = null;
+
+/* ================= LOAD PENDING ================= */
+
+function loadPending(){
+
+  onSnapshot(collection(db,"pending_uploads"),snap=>{
+
+    pendingList.innerHTML = snap.docs.map(d=>{
+
+      const data = d.data();
+
+      return `
+
+      <div class="file-card">
+
+        <h4>${data.title || "Untitled"}</h4>
+
+        <div class="meta">
+
+          👤 ${data.uploaderName || "Unknown"}<br>
+
+          🆔 ${data.uploadedBy || "N/A"}<br>
+
+          📂 ${data.category || "module"}
+
+        </div>
+
+        <p>${data.description || ""}</p>
+
+        <div class="btn-group">
+
+          <button
+            class="approve"
+            onclick='approveFile("${d.id}", ${JSON.stringify(data)})'>
+
+            Approve
+
+          </button>
+
+          <button
+            class="reject"
+            onclick='rejectFile("${d.id}")'>
+
+            Reject
+
+          </button>
+
+          <button
+            class="preview"
+            onclick='openPreview("${d.id}", ${JSON.stringify(data)})'>
+
+            Preview
+
+          </button>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }).join("");
+
+  });
+
+}
+
+/* ================= LOAD LOGS ================= */
+
+function loadLogs(){
+
+  onSnapshot(collection(db,"upload_logs"),snap=>{
+
+    logList.innerHTML = snap.docs
+    .sort((a,b)=>b.data().timestamp-a.data().timestamp)
+    .map(d=>{
+
+      const log = d.data();
+
+      return `
+
+      <div class="file-card">
+
+        <b>${log.action}</b><br>
+
+        📄 ${log.fileTitle}<br>
+
+        👤 ${log.studentName}
+
+      </div>
+
+      `;
+
+    }).join("");
+
+  });
+
+}
+
+/* ================= APPROVE ================= */
+
+window.approveFile = async(id,data)=>{
+
+  await addDoc(collection(db,"quick_pantry"),{
+
+    ...data,
+    status:"approved",
+    createdAt:Date.now()
+
+  });
+
+  await deleteDoc(doc(db,"pending_uploads",id));
+
+  alert("Approved!");
+
+};
+
+/* ================= REJECT ================= */
+
+window.rejectFile = async(id)=>{
+
+  await deleteDoc(doc(db,"pending_uploads",id));
+
+  alert("Rejected!");
+
+};
+
+/* ================= CLEAR LOGS ================= */
+
+window.clearLogs = async()=>{
+
+  const snap = await getDocs(collection(db,"upload_logs"));
+
+  for(const d of snap.docs){
+
+    await deleteDoc(doc(db,"upload_logs",d.id));
+
+  }
+
+  alert("Logs Cleared");
+
+};
+
+/* ================= OPEN PREVIEW ================= */
+
+window.openPreview = function(id,data){
+
+  currentId = id;
+  currentData = data;
+
+  previewModal.style.display = "flex";
+
+  editTitle.value = data.title || "";
+  editDescription.value = data.description || "";
+  editCategory.value = data.category || "module";
+
+  const url = data.fileUrl || "";
+
+  downloadBtn.href = url;
+
+  const cleanUrl =
+    url.split("?")[0].toLowerCase();
+
+  /* PDF */
+
+  if(cleanUrl.endsWith(".pdf")){
+
+    previewFrame.src = url;
+
+  }
+
+  /* IMAGES */
+
+  else if(
+
+    cleanUrl.endsWith(".png") ||
+    cleanUrl.endsWith(".jpg") ||
+    cleanUrl.endsWith(".jpeg") ||
+    cleanUrl.endsWith(".gif") ||
+    cleanUrl.endsWith(".webp")
+
+  ){
+
+    previewFrame.src = url;
+
+  }
+
+  /* OFFICE FILES */
+
+  else if(
+
+    cleanUrl.endsWith(".docx") ||
+    cleanUrl.endsWith(".pptx") ||
+    cleanUrl.endsWith(".xlsx")
+
+  ){
+
+    previewFrame.src =
+      `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+
+  }
+
+  else{
+
+    previewFrame.src = url;
+
+  }
+
+};
+
+/* ================= CLOSE ================= */
+
+window.closeModal = function(){
+
+  previewModal.style.display = "none";
+
+  previewFrame.src = "";
+
+  currentId = null;
+
+  currentData = null;
+
+};
+
+/* ================= SAVE EDIT ================= */
+
+window.saveEdit = async function(){
+
+  if(!currentId) return;
+
+  await updateDoc(doc(db,"pending_uploads",currentId),{
+
+    title:editTitle.value,
+    description:editDescription.value,
+    category:editCategory.value,
+    updatedAt:Date.now()
+
+  });
+
+  alert("Updated!");
+
+};
+
+/* ================= UPDATE FILE ================= */
+
+window.updateCloudinaryFile = async function(event){
+
+  const file = event.target.files[0];
+
+  if(!file) return;
+
+  try{
+
+    const formData = new FormData();
+
+    formData.append("file",file);
+
+    formData.append(
+      "upload_preset",
+      UPLOAD_PRESET
+    );
+
+    /* OVERWRITE OLD FILE */
+
+    if(currentData.publicId){
+
+      formData.append(
+        "public_id",
+        currentData.publicId
+      );
+
+      formData.append(
+        "overwrite",
+        "true"
+      );
+
+    }
+
+    /* CLOUDINARY UPLOAD */
+
+    const response = await fetch(
+
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+
+      {
+        method:"POST",
+        body:formData
+      }
+
+    );
+
+    const result = await response.json();
+
+    if(result.error){
+
+      throw new Error(result.error.message);
+
+    }
+
+    const newUrl = result.secure_url;
+
+    /* UPDATE FIRESTORE */
+
+    await updateDoc(
+
+      doc(db,"pending_uploads",currentId),
+
+      {
+
+        fileUrl:newUrl,
+        publicId:result.public_id,
+        fileName:file.name,
+        updatedAt:Date.now()
+
+      }
+
+    );
+
+    /* UPDATE LOCAL */
+
+    currentData.fileUrl = newUrl;
+
+    currentData.publicId = result.public_id;
+
+    /* UPDATE DOWNLOAD BUTTON */
+
+    downloadBtn.href = newUrl;
+
+    /* REFRESH PREVIEW */
+
+    const cleanUrl =
+      newUrl.split("?")[0].toLowerCase();
+
+    if(
+
+      cleanUrl.endsWith(".docx") ||
+      cleanUrl.endsWith(".pptx") ||
+      cleanUrl.endsWith(".xlsx")
+
+    ){
+
+      previewFrame.src =
+      `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(newUrl)}`;
+
+    }
+
+    else{
+
+      previewFrame.src = newUrl;
+
+    }
+
+    alert("File updated successfully!");
+
+    updateFileInput.value = "";
+
+  }
+
+  catch(err){
+
+    console.error(err);
+
+    alert(err.message);
+
+  }
+
+};
+
+/* ================= INIT ================= */
+
+loadPending();
+loadLogs();
+
+</script>
+
+</body>
+</html>

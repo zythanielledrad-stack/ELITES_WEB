@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      color: #e2e8f0;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ================= SIDEBAR ================= */
+    .sidebar {
+      width: 280px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      background: rgba(30,41,59,0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(59,130,246,0.2);
+      padding: 30px 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 35px;
+      background: linear-gradient(135deg,#3b82f6,#10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      background: rgba(15,23,42,0.6);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(16,185,129,0.2));
+      border-color: rgba(59,130,246,0.3);
+      transform: translateX(4px);
+    }
+
+    /* ================= MAIN ================= */
+    .main {
+      margin-left: 280px;
+      width: calc(100% - 280px);
+      padding: 30px;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      padding: 20px 30px;
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(59,130,246,0.2);
+      z-index: 100;
+      border-radius: 20px 20px 0 0;
+      margin: -30px -30px 30px -30px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 14px rgba(239,68,68,0.4);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(239,68,68,0.6);
+    }
+
+    /* ================= SECTIONS ================= */
+    .section {
+      display: none;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ================= PANEL/CARD ================= */
+    .panel, .card {
+      background: rgba(30,41,59,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+      margin-bottom: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before, .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b);
+    }
+
+    .panel:hover, .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      border-color: rgba(59,130,246,0.4);
+    }
+
+    .panel h3, .card h3 {
+      margin: 0 0 25px 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ================= STATS ================= */
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: rgba(59,130,246,0.2);
+      padding: 20px 25px;
+      border-radius: 16px;
+      text-align: center;
+      flex: 1;
+      min-width: 140px;
+      border: 1px solid rgba(59,130,246,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(59,130,246,0.3);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #3b82f6;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+
+    /* ================= INPUTS ================= */
+    input, textarea, select {
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: rgba(15,23,42,0.8);
+      color: #f1f5f9;
+      font-size: 16px;
+      font-family: inherit;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #64748b;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(15,23,42,0.95);
+      box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+      transform: translateY(-2px);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    /* ================= BUTTONS ================= */
+    button.primary {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      padding: 18px 24px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(59,130,246,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button.primary:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(59,130,246,0.5);
+    }
+
+    button.primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ================= FILE UPLOAD ================= */
+.file-input-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.file-input-wrapper input[type=file] {
+  /* THE FIX: Overlay the input on top of the button */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* Make invisible */
+  cursor: pointer;
+  z-index: 10; /* Ensure it sits on top */
+}
+
+.file-btn {
+  /* Ensure the visual button is below the invisible input */
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  cursor: pointer; /* This changes to pointer when input overlays */
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+  width: 100%;
+  display: block;
+}
+
+    .file-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(16,185,129,0.4);
+    }
+
+    .preview {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #020617, #0f172a);
+      border-radius: 16px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed rgba(59,130,246,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    .preview-placeholder {
+      color: #64748b;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* ================= GRID ================= */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card-grid-item {
+      background: rgba(30,41,59,0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(71,85,105,0.5);
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-grid-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      border-color: rgba(59,130,246,0.5);
+    }
+
+    /* ================= EXCEL IMPORT ================= */
+    .excel-import {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: none;
+      width: 100%;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .excel-import:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(139,92,246,0.4);
+    }
+
+    /* ================= SUBSCRIBER ROW ================= */
+    .subscriber-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      align-items: end;
+    }
+
+    .subscriber-row input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .subscriber-row button {
+      width: auto;
+      padding: 16px 28px;
+      font-size: 15px;
+    }
+
+    /* ================= OFFICER FORM ================= */
+    .officer-form-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .officer-form-group select,
+    .officer-form-group input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    /* ================= PROGRESS ================= */
+    #progressOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      backdrop-filter: blur(12px);
+    }
+
+    .progressBox {
+      width: 400px;
+      background: rgba(30,41,59,0.95);
+      padding: 35px;
+      border-radius: 20px;
+      text-align: center;
+      border: 1px solid rgba(59,130,246,0.3);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    }
+
+    .progressBar {
+      height: 12px;
+      background: rgba(15,23,42,0.8);
+      border-radius: 50px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .progressFill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg,#3b82f6,#10b981);
+      transition: width 0.3s ease;
+      border-radius: 50px;
+    }
+
+    /* ================= DASHBOARD ================= */
+    .dashboard-welcome {
+      text-align: center;
+      padding: 60px 40px;
+      color: #94a3b8;
+    }
+
+    .dashboard-welcome h1 {
+      font-size: 36px;
+      background: linear-gradient(135deg, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    /* ================= MAINTENANCE MODAL ================= */
+    #maintenanceModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.75);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .maintenance-modal-content {
+      width: 420px;
+      background: rgba(30,41,59,0.95);
+      border-radius: 20px;
+      padding: 35px;
+      border: 1px solid rgba(59,130,246,0.3);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      position: relative;
+      animation: popup 0.3s ease;
+    }
+
+    @keyframes popup {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .sidebar { width: 260px; }
+      .main { margin-left: 260px; width: calc(100% - 260px); padding: 20px; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { 
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; width: 100%; }
+      .stats { flex-direction: column; }
+      .officer-form-group { flex-direction: column; }
+      .subscriber-row { flex-direction: column; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .stats { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+    .stat { background: rgba(59,130,246,0.2); padding: 20px 25px; border-radius: 16px; text-align: center; flex: 1; min-width: 140px; border: 1px solid rgba(59,130,246,0.3); transition: all 0.3s ease; }
+    .stat:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(59,130,246,0.3); }
+    .stat-number { font-size: 32px; font-weight: 700; color: #3b82f6; display: block; }
+    .stat-label { font-size: 14px; color: #94a3b8; margin-top: 6px; }
+
+
+    table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #f5f5f5;
+  text-align: left;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #293348;
+}
+
+
+/* ================= VIEW LOGS ================= */
+
+.table-container{
+  overflow:auto;
+  border-radius:12px;
+}
+
+.logs-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:900px;
+}
+
+.logs-table th{
+  background:#111827;
+  color:white;
+  padding:14px;
+  text-align:left;
+  font-size:14px;
+}
+
+.logs-table td{
+  padding:14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:14px;
+}
+
+.logs-table tr:hover{
+  background:rgba(59,130,246,.08);
+}
+
+#viewSearch{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  background:#0f172a;
+  color:white;
+}
+
+.device-pill{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:999px;
+  background:rgba(59,130,246,.15);
+  color:#60a5fa;
+  font-size:12px;
+}
+
+
+/* ================= TABLE DESIGN ================= */
+
+.table-wrapper{
+  overflow-x:auto;
+  border-radius:18px;
+  border:1px solid rgba(59,130,246,.18);
+  background:rgba(15,23,42,.65);
+  backdrop-filter:blur(14px);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1000px;
+  overflow:hidden;
+}
+
+thead{
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+
+th{
+  padding:18px;
+  text-align:left;
+  font-size:14px;
+  font-weight:700;
+  color:white;
+  letter-spacing:.4px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+td{
+  padding:16px;
+  font-size:14px;
+  color:#e2e8f0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+tbody tr{
+  transition:all .25s ease;
+}
+
+tbody tr:hover{
+  background:rgba(59,130,246,.10);
+  transform:scale(1.002);
+}
+
+tbody tr:nth-child(even){
+  background:rgba(255,255,255,.015);
+}
+
+/* SEARCH */
+
+#viewSearch{
+  width:100%;
+  padding:16px 18px;
+  border-radius:14px;
+  border:1px solid rgba(59,130,246,.25);
+  background:rgba(15,23,42,.9);
+  color:white;
+  font-size:15px;
+  transition:.25s;
+  margin-top:15px;
+}
+
+#viewSearch:focus{
+  outline:none;
+  border-color:#3b82f6;
+  box-shadow:0 0 0 4px rgba(59,130,246,.15);
+}
+
+/* DEVICE PILL */
+
+.device-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(59,130,246,.15);
+  color:#93c5fd;
+  font-size:12px;
+  font-weight:600;
+  border:1px solid rgba(59,130,246,.2);
+}
+
+/* ACTION BUTTONS */
+
+.action-btn{
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.25s;
+}
+
+.clear-btn{
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  color:white;
+}
+
+.clear-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 24px rgba(239,68,68,.35);
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+  text-align:center;
+  padding:40px;
+  color:#94a3b8;
+  font-size:15px;
+}
+  </style>
+
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <h2>🛠 Administrator</h2>
+
+  <div class="nav-item active" onclick="showSection('dashboard')" data-section="dashboard">Dashboard</div>
+  <div class="nav-item" onclick="showSection('posts')" data-section="posts">Happenings</div>
+  <div class="nav-item" onclick="showSection('officers')" data-section="officers">Officers</div>
+  <div class="nav-item" onclick="showSection('quick-pantry')" data-section="quick-pantry">Quick Pantry</div>
+  <div class="nav-item" onclick="showSection('StudentUploads')" data-section="StudentUploads">Student Uploads</div>
+  <div class="nav-item" onclick="showSection('transparency')" data-section="transparency">Transparency</div>
+  <div class="nav-item" onclick="showSection('students')" data-section="students">Manage Students</div>
+  <div class="nav-item" onclick="showSection('studentLastOpenSection')" data-section="studentLastOpenSection">Student Last Open</div>
+  <div class="nav-item" onclick="showSection('onlineUsers')" data-section="onlineUsers">Online Users</div>
+  <div class="nav-item" onclick="showSection('subscribers')" data-section="subscribers">Subscribers</div>
+  <div class="nav-item" onclick="showSection('maintenance')" data-section="maintenance">🛠 Settings</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <h1 id="sectionTitle">Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="section active">
+    <div class="panel">
+
+      <div class="dashboard-welcome">
+        <h1>Welcome to Dashboard</h1>
+      </div>
+
+      <div class="stats">
+<div class="panel">
+  <h3 style="color:#34d399;">
+    📊 Course & Year Summary
+  </h3>
+    <div id="studentSummaryGrid"></div>
+</div>
+        <div class="stat">
+          <span class="stat-number" id="totalStudents">0</span>
+          <span class="stat-label">Total Students</span>
+        </div>
+
+        <div class="stat">
+          <span class="stat-number" id="dash-postCount">0</span>
+          <span class="stat-label">Happenings</span>
+        </div>
+
+        <div class="stat">
+          <span class="stat-number" id="dash-officerCount">0</span>
+          <span class="stat-label">Officers</span>
+        </div>
+
+        <div class="stat">
+          <span class="stat-number" id="dash-subscriberCount">0</span>
+          <span class="stat-label">Subscribers</span>
+        </div>
+
+        <div class="stat">
+          <span class="stat-number" id="totalFiles">0</span>
+          <span class="stat-label">Uploaded Files</span>
+        </div>
+
+        <!--<div class="stat">
+          <span class="stat-number" id="totalReviews">0</span>
+          <span class="stat-label">Pending Reviews</span>
+        </div>-->
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- POSTS -->
+  <div id="posts" class="section">
+
+    <div class="panel">
+      <h3>✨ Create New Happening</h3>
+
+      <input type="hidden" id="editId">
+      <input type="text" id="title" placeholder="Enter happening title...">
+      <textarea id="desc" placeholder="Enter detailed description..."></textarea>
+
+      <div class="file-input-wrapper">
+        <input type="file" id="image" accept="image/*" onchange="previewImage(event)">
+        <div class="file-btn">📸 Choose Image</div>
+      </div>
+
+      <div class="preview" id="previewBox">
+        <div class="preview-placeholder">Image preview will appear here</div>
+      </div>
+
+      <button class="primary" onclick="savePost()">
+        🚀 <span id="saveText">Save Happening</span>
+      </button>
+    </div>
+
+    <div class="panel">
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number" id="postCount">0</span>
+          <span class="stat-label">Happenings</span>
+        </div>
+      </div>
+
+      <h3>📋 All Happenings</h3>
+      <div class="grid" id="list"></div>
+    </div>
+
+  </div>
+
+  <!-- OFFICERS -->
+  <div id="officers" class="section">
+
+    <div class="panel">
+      <h3>👮 Add New Officer</h3>
+
+      <input type="hidden" id="editOfficerId">
+
+      <div class="officer-form-group">
+        <select id="officerYear">
+          <option value="">Select Year</option>
+          <option>1st Year</option>
+          <option>2nd Year</option>
+          <option>3rd Year</option>
+          <option>4th Year</option>
+        </select>
+
+        <input id="officerName" placeholder="Full Name *">
+      </div>
+
+      <input id="officerPosition" placeholder="Position/Role">
+
+      <div class="file-input-wrapper">
+        <input type="file" id="officerImage" accept="image/*" onchange="previewOfficerImage(event)">
+        <div class="file-btn">📸 Choose Officer Photo</div>
+      </div>
+
+      <div class="preview" id="officerPreviewBox">
+        <div class="preview-placeholder">Officer preview</div>
+      </div>
+
+      <button class="primary" onclick="saveOfficer()">💾 Save Officer</button>
+    </div>
+
+    <div class="panel">
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-number" id="officerCount">0</span>
+          <span class="stat-label">Total Officers</span>
+        </div>
+      </div>
+
+      <h3>👮 Current Officers</h3>
+      <div class="grid" id="officersList"></div>
+    </div>
+
+  </div>
+
+  <!-- SUBSCRIBERS -->
+  <div id="subscribers" class="section">
+
+  <div class="panel">
+    <h3>📧 Email Subscribers</h3>
+
+    <!-- Manual Add -->
+    <div class="subscriber-row">
+      <input type="email" id="subscriberEmail" placeholder="john@example.com">
+      <button class="primary" onclick="addSubscriber()">➕ Add</button>
+    </div>
+
+    <!-- Excel Import -->
+    <div class="panel" style="margin-top: 20px; background: rgba(15,23,42,0.5);">
+      <h4 style="margin: 0 0 15px 0; color: #8b5cf6;">📥 Import from Excel</h4>
+      
+      <div class="file-input-wrapper">
+        <input type="file" id="excelSubscribersFile" accept=".xlsx,.xls,.csv" onchange="previewSubscriberExcel(event)">
+        <div class="file-btn" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">📊 Choose Excel File</div>
+      </div>
+
+      <!-- Preview Section -->
+      <div id="subscriberUploadPreview" style="display: none; margin-top: 15px;">
+        <div style="background: rgba(15,23,42,0.8); padding: 20px; border-radius: 12px; border: 1px solid rgba(139,92,246,0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div>
+              <span style="color: #8b5cf6; font-weight: 700; font-size: 18px;" id="subscriberPreviewCount">0</span>
+              <span style="color: #94a3b8;"> emails found</span>
+            </div>
+            <button class="primary" onclick="importSubscribersFromExcel()" style="width: auto; padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+              📥 Import All
+            </button>
+          </div>
+          <div id="subscriberPreviewList" style="max-height: 150px; overflow-y: auto; font-size: 14px; color: #cbd5e1;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-number" id="subscriberCount">0</span>
+        <span class="stat-label">Total Subscribers</span>
+      </div>
+    </div>
+
+    <div class="grid" id="subscribersList"></div>
+  </div>
+
+
+  </div>
+
+  <!-- STUDENTS --> 
+   <div id="students" class="section"> 
+    
+    <!-- IMPORT --> 
+     <div class="panel">
+       <h3>📥 Import Students via Excel</h3> 
+       <p style="color:#94a3b8;"> Excel must have: 
+        <b>StudentNumber</b>, 
+        <b>Name</b>, 
+        <b>Year</b>, 
+        <b>Course</b> 
+      </p> <input type="file" id="excelStudentsFile" accept=".xlsx,.xls"> 
+      <button class="primary" onclick="importStudents()"> 📥 Import Students </button> 
+    </div>
+     <!-- ADD / EDIT --> 
+      <div class="panel">
+         <h3>👤 Add / Edit Student</h3> 
+         <input id="studentNumber" placeholder="Student Number"> 
+         <input id="studentName" placeholder="Student Name"> 
+         <div style="display:flex;gap:10px;"> 
+          <select id="studentYear"> 
+            <option value="">Year Level</option> 
+            <option>1st Year</option> 
+            <option>2nd Year</option> 
+            <option>3rd Year</option> 
+            <option>4th Year</option> 
+          </select> 
+          <input id="studentCourse" placeholder="Section"> 
+        </div>
+        <button class="primary" onclick="saveUser()"> 💾 Save Student </button> 
+      </div> 
+      <!-- GROUP EDIT --> 
+       <div class="panel"> 
+        <div style=" display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; "> 
+          <h3 style="margin:0;">🛠 Group Edit</h3> 
+          <label style=" display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:600; "> 
+            <input type="checkbox" id="enableGroupEdit" onchange="toggleGroupEdit()"> Enable </label> 
+          </div> 
+          <!-- HIDDEN CONTENT --> 
+           <div id="groupEditContainer" style="display:none;"> 
+            <div style="display:flex;gap:10px;"> 
+              <select id="groupYear"> 
+                <option value="">Select Year</option> 
+                <option>1st Year</option> 
+                <option>2nd Year</option> 
+                <option>3rd Year</option> 
+                <option>4th Year</option> 
+              </select> 
+              <input type="text" id="groupSection" placeholder="Section"> 
+            </div> 
+            <button class="primary" style="margin-top:15px;" onclick="updateSelectedStudents()"> 🛠 Update Selected Students </button> 
+          </div> 
+        </div>
+         <!-- LIST --> 
+          <div class="panel"> 
+            <h3>👥 Student List</h3> 
+            <!-- SORT FILTERS -->
+               <div style=" display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; "> 
+                <select id="sortYear" onchange="filterStudents()">
+                   <option value="">All Years</option>
+                    <option>1st Year</option> 
+                    <option>2nd Year</option> 
+                    <option>3rd Year</option> 
+                    <option>4th Year</option> 
+                  </select> 
+                  <select id="sortCourse" onchange="filterStudents()">
+                     <option value="">All Courses</option> 
+                     <option>HE</option>
+                      <option>IA</option> 
+                      <option>ICT</option> 
+                    </select> 
+                  </div>
+                   <!-- SEARCH BAR --> 
+                    <div style="margin-bottom:20px;">
+                       <input type="text" id="studentSearch" placeholder="🔍 Search by student number, name, year, or course..." 
+                       onkeyup="filterStudents()" style=" width:100%; padding:16px 20px; border-radius:12px; 
+                       border:none; background:rgba(15,23,42,0.9); color:white; font-size:15px; " > 
+                       </div> 
+                       <div style="overflow:auto;"> 
+                        <table style=" width:100%; border-collapse:collapse; "> 
+                          <thead>
+                             <tr>
+                             <th id="selectHeader" style="display:none;"> Select </th> 
+                               <th style="background:#3b82f6; color:white;">Student Number</th> 
+                               <th style="background:#3b82f6; color:white;">Name</th>
+                               <th style="background:#3b82f6; color:white;">Year</th> 
+                               <th style="background:#3b82f6; color:white;">Course</th> 
+                               <th style="background:#3b82f6; color:white;">Date</th>
+                               <th style="background:#3b82f6; color:white;">Action</th>
+                                </tr> 
+                           </thead> 
+                           <tbody id="studentsTable"></tbody> 
+                          </table> 
+                        </div> 
+            <!-- EXPORT --> 
+             <div class="panel"> 
+              <h3>📤 Export Students</h3>
+               <div style="display:flex;gap:10px;flex-wrap:wrap;"> 
+                <select id="exportYear"> 
+                  <option value="">All Years</option>
+                   <option>1st Year</option>
+                    <option>2nd Year</option> 
+                    <option>3rd Year</option> 
+                    <option>4th Year</option> 
+               </select> 
+               <input type="text" id="exportSection" placeholder="Section (Optional)"> 
+             </div> 
+            <div style="display:flex;gap:10px;margin-top:15px;"> 
+              <button class="primary" onclick="exportStudentsExcel()"> 📊 Export Excel </button> 
+              <button class="primary" onclick="exportStudentsPDF()"> 📄 Export PDF </button> 
+           </div> 
+       </div>
+           <iframe
+      src="../pages/quickpantry/sigunp_approve.html"
+      style="width:100%; height:800px; border:none; border-radius:10px;">
+    </iframe>
+    </div> 
+
+    
+   </div>
+
+  <!-- QUICK PANTRY -->
+  <div id="quick-pantry" class="section">
+
+    <div class="panel">
+      <h3>🥫 Upload Pantry File</h3>
+
+      <input type="text" id="pantryTitle" placeholder="File Title">
+
+      <select id="pantryCategory">
+        <option>Module</option>
+        <option>Reviewer</option>
+        <option>Activity</option>
+        <option>Notes</option>
+      </select>
+
+      <textarea id="pantryDescription" placeholder="Description"></textarea>
+
+      <input type="file" id="pantryFile">
+
+      <button class="primary" onclick="uploadPantryFile()">Upload</button>
+    </div>
+
+    <div class="panel">
+      <h3>📂 Files</h3>
+      <div class="grid" id="pantryList"></div>
+    </div>
+
+  </div>
+
+  <!-- ONLINE USERS -->
+  <div id="onlineUsers" class="section">
+    <iframe
+      src="../pages/quickpantry/online-users.html"
+      style="width:100%; height:400px; border:none; border-radius:10px;">
+    </iframe>
+  </div>
+
+  <!--Transparency-->
+    <div id="transparency" class="section">
+    <iframe
+      src="../pages/transparency/transparency_admin.html"
+      style="width:100%; height:800px; border:none; border-radius:10px;">
+    </iframe>
+  </div>
+
+   <div id="StudentUploads" class="section">
+    <iframe
+      src="../pages/quickpantry/admin_upload.html"
+      style="width:100%; height:800px; border:none; border-radius:10px;">
+    </iframe>
+  </div>
+
+
+  <!-- MAINTENANCE -->
+  <div id="maintenance" class="section">
+
+    <div class="panel">
+      <h3>🛠 Maintenance Mode</h3>
+
+      <div id="statusText"
+        style="background: rgba(15,23,42,0.7);
+        border: 1px solid rgba(59,130,246,0.2);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 600;
+        color: #f8fafc;">
+        Loading status...
+      </div>
+
+      <div style="display:flex; gap:15px;">
+
+        <button
+          id="enableBtn"
+          class="primary"
+          style="background: linear-gradient(135deg, #ef4444, #dc2626); flex:1;"
+          onclick="toggleMaintenance(true)">
+          🚧 ENABLE Maintenance
+        </button>
+
+        <button
+          id="disableBtn"
+          class="primary"
+          style="background: linear-gradient(135deg, #10b981, #059669); flex:1;"
+          onclick="toggleMaintenance(false)">
+          ✅ DISABLE Maintenance
+        </button>
+
+      </div>
+    </div>
+
+<div style="margin-top:20px;padding:15px;background:#111827;border-radius:12px;">
+  <h3>🔐 Security Control</h3>
+
+  <div id="recaptchaStatus" style="margin:10px 0;font-weight:bold;">
+    Loading...
+  </div>
+
+  <button onclick="toggleRecaptcha()" style="
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    background:#3b82f6;
+    color:white;
+    cursor:pointer;
+  ">
+    Toggle reCAPTCHA
+  </button>
+</div>  
+
+        <div style="margin-top:20px;padding:15px;background:#111827;border-radius:12px;">
+  <h3>🔐  quickpantry</h3>
+
+  <button onclick="forceLogoutAll()" style="
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    background:#3b82f6;
+    color:white;
+    cursor:pointer;
+  ">
+    Force Logout All
+  </button>
+</div>  
+</div>
+
+
+<!-- ================= STUDENT LAST OPEN ================= -->
+<div class="section" id="studentLastOpenSection">
+  
+
+   <h3>🕒 Student Last Open Dashboard</h3>
+
+  <input
+    type="text"
+    id="viewSearch"
+    placeholder="Search student..."
+    onkeyup="filterViewLogs()"
+  >
+  <div style="display:flex;justify-content:flex-end;margin-top:15px;">
+  <button class="action-btn clear-btn" onclick="clearViewLogs()">
+    🗑 Clear History
+  </button>
+</div>
+
+  <div class="table-wrapper" style="margin-top:20px;">
+
+    <table>
+
+      <thead>
+        <tr>
+
+          <th>Student Name</th>
+
+          <th>Student Number</th>
+
+          <th>Last File Opened</th>
+
+          <th>Category</th>
+
+          <th>Last Open Time</th>
+
+          <th>Device</th>
+
+        </tr>
+      </thead>
+
+      <tbody id="viewLogsTable"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+<!-- END MAIN -->
+
+<!-- PROGRESS -->
+<div id="progressOverlay">
+  <div class="progressBox">
+    <h3 id="progressText">Loading...</h3>
+
+    <div class="progressBar">
+      <div class="progressFill" id="progressFill"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- XLSX Library -->
+
+<script src="../assets/js/init.j"></script>
+
+<script>
+  runAdminInit();
+</script>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script type="module">
+  // 🔥 Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+  import { 
+    getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, 
+    query, orderBy, getDocs, setDoc, getDoc, where
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+  // Config
+  const firebaseConfig = {
+  apiKey: "AIzaSyAmzy_8B2h_sTtAKE2dVgfl2K-OXd5TVZg",
+  authDomain: "voting-890f2.firebaseapp.com",
+  projectId: "voting-890f2",
+  storageBucket: "voting-890f2.firebasestorage.app",
+  messagingSenderId: "537631858085",
+  appId: "1:537631858085:web:aa1cc4b76f40a0bce21c4c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const API_BASE_URL = 'https://btled-ict.vercel.app';
+  const captchaRef = doc(db, "settings", "security");
+
+  // 🔥 ALL ELEMENTS - Unified
+  const elements = {
+    // Posts
+    title: document.getElementById('title'),
+    desc: document.getElementById('desc'),
+    image: document.getElementById('image'),
+    editId: document.getElementById('editId'),
+    previewBox: document.getElementById('previewBox'),
+    list: document.getElementById('list'),
+    postCount: document.getElementById('postCount'),
+    dashpostCount: document.getElementById('dash-postCount'),
+    saveText: document.getElementById('saveText'),
+    
+    // Subscribers
+    subscriberEmail: document.getElementById('subscriberEmail'),
+    subscribersList: document.getElementById('subscribersList'),
+    subscriberCount: document.getElementById('subscriberCount'),
+    dashsubscriberCount: document.getElementById('dash-subscriberCount'),
+    excelFile: document.getElementById('excelFile'),
+    uploadPreview: document.getElementById('uploadPreview'),
+    previewCount: document.getElementById('previewCount'),
+    emailPreview: document.getElementById('emailPreview'),
+    
+    // Officers
+    editOfficerId: document.getElementById('editOfficerId'),
+    officerYear: document.getElementById('officerYear'),
+    officerName: document.getElementById('officerName'),
+    officerPosition: document.getElementById('officerPosition'),
+    officerImage: document.getElementById('officerImage'),
+    officerPreviewBox: document.getElementById('officerPreviewBox'),
+    officerSaveText: document.getElementById('officerSaveText'),
+    saveOfficerBtn: document.getElementById('saveOfficerBtn'),
+    cancelEditBtn: document.getElementById('cancelEditBtn'),
+    officerCount: document.getElementById('officerCount'),
+    dashofficerCount: document.getElementById('dash-officerCount'),
+    officersList: document.getElementById('officersList'),
+    
+    // UI
+    sectionTitle: document.getElementById('sectionTitle'),
+    sidebar: document.getElementById('sidebar'),
+    progressOverlay: document.getElementById('progressOverlay'),
+    progressText: document.getElementById('progressText'),
+    progressFill: document.getElementById('progressFill'),
+    statusText: document.getElementById('statusText'),
+    enableBtn: document.getElementById('enableBtn'),
+    disableBtn: document.getElementById('disableBtn')
+  };
+
+  let previewEmails = [];
+  let currentOfficerImage = null;
+  let recaptchaEnabled = true;
+
+  // 🔥 AUTH & SECURITY
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+
+  window.logout = () => {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    }).catch(err => {
+      console.error('Logout error:', err);
+      alert('Logout failed: ' + err.message);
+    });
+  };
+
+  // 🔥 NAVIGATION
+  window.showSection = (id) => {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
+    const section = document.getElementById(id);
+    if (section) {
+      section.classList.add('active');
+    }
+    
+    const navItem = document.querySelector(`[data-section="${id}"]`);
+    if (navItem) {
+      navItem.classList.add('active');
+    }
+    
+    const titles = {
+      dashboard: 'Dashboard',
+      posts: 'Happenings',
+      officers: 'Officers',
+      subscribers: 'Subscribers',
+      maintenance: 'Maintenance'
+    };
+    elements.sectionTitle.textContent = titles[id] || 'Dashboard';
+  };
+
+  // 🔥 PROGRESS OVERLAY
+  function showProgress(text) {
+    elements.progressOverlay.style.display = "flex";
+    elements.progressText.textContent = text || 'Loading...';
+    setProgress(0);
+  }
+
+  function hideProgress() {
+    elements.progressOverlay.style.display = "none";
+  }
+
+  function setProgress(v) {
+    elements.progressFill.style.width = Math.max(0, Math.min(100, v)) + "%";
+  }
+
+  // 🔥 CLOUDINARY UPLOAD
+  async function uploadImage(file) {
+    if (!file) return null;
+    
+    const form = new FormData();
+    form.append("file", file);
+    form.append("upload_preset", "happenings");
+    
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/dou3k8w8r/image/upload`, { 
+        method: "POST", 
+        body: form 
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Upload failed: ${res.status} ${errorText}`);
+      }
+      
+      const data = await res.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw new Error('Image upload failed. Please try again.');
+    }
+  }
+
+  // 🔥 POSTS FUNCTIONS
+  window.previewImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        elements.previewBox.innerHTML = `<img src="${reader.result}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  window.savePost = async () => {
+    const title = elements.title.value.trim();
+    const desc = elements.desc.value.trim();
+    
+    if (!title || !desc) {
+      alert("❌ Please fill title & description!");
+      return;
+    }
+
+    const saveTextEl = elements.saveText;
+    const saveBtn = saveTextEl.parentElement;
+    saveBtn.disabled = true;
+    saveTextEl.textContent = 'Saving...';
+
+    try {
+      const file = elements.image.files[0];
+      let imageUrl = null;
+
+      if (file) {
+        saveTextEl.textContent = 'Uploading image...';
+        imageUrl = await uploadImage(file);
+      }
+
+      const editId = elements.editId.value;
+      
+      if (editId) {
+        // UPDATE
+        await updateDoc(doc(db, "happenings", editId), {
+          title, 
+          description: desc,
+          ...(imageUrl && { image: imageUrl }),
+          updatedAt: new Date()
+        });
+        alert('✅ Happening updated successfully!');
+        elements.editId.value = "";
+        elements.saveText.textContent = 'Save Happening';
+      } else {
+        // CREATE
+        const docRef = await addDoc(collection(db, "happenings"), {
+          title, 
+          description: desc, 
+          image: imageUrl || "", 
+          createdAt: new Date()
+        });
+
+        // Send email notifications
+        try {
+          const subscribersSnap = await getDocs(collection(db, 'subscribers'));
+          const subscribers = subscribersSnap.docs.map(d => d.data().email);
+          
+          if (subscribers.length > 0) {
+            await fetch(`${API_BASE_URL}/api/email`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                title, 
+                description: desc, 
+                image: imageUrl, 
+                subscribers 
+              })
+            });
+          }
+        } catch (e) {
+          console.warn('Email notification failed:', e);
+        }
+        
+        alert('✅ Happening created & notifications sent!');
+        clearPostForm();
+      }
+      
+    } catch (error) {
+      console.error('Post save error:', error);
+      alert('❌ Save failed: ' + error.message);
+    } finally {
+      saveBtn.disabled = false;
+      if (!elements.editId.value) {
+        saveTextEl.textContent = 'Save Happening';
+      }
+    }
+  };
+
+  function clearPostForm() {
+    elements.title.value = elements.desc.value = "";
+    elements.image.value = "";
+    elements.previewBox.innerHTML = '<div class="preview-placeholder">Image preview will appear here</div>';
+    elements.editId.value = "";
+    elements.saveText.textContent = 'Save Happening';
+  }
+
+ window.editPost = (id, title, desc) => {
+  elements.editId.value = id;
+  elements.title.value = title;
+  elements.desc.value = desc;
+  elements.saveText.textContent = 'Update Happening';
+  elements.title.focus();
+  
+  // Scroll to the form
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.deletePost = async (id) => {
+  if (!id) {
+    console.error('No ID provided');
+    return;
+  }
+  
+  if (confirm('🗑️ Delete this happening? This cannot be undone.')) {
+    try {
+      await deleteDoc(doc(db, "happenings", id));
+      alert('✅ Happening deleted!');
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('❌ Delete failed: ' + error.message);
+    }
+  }
+};
+
+  // 🔥 OFFICERS FUNCTIONS
+  window.previewOfficerImage = (event) => {
+    const file = event.target.files[0];
+    const previewBox = elements.officerPreviewBox;
+    
+    if (file && file.type.startsWith('image/')) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('❌ Image too large! Please choose a file under 5MB.');
+        event.target.value = '';
+        return;
+      }
+      
+      currentOfficerImage = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewBox.innerHTML = `
+          <div style="position:relative;">
+            <img src="${e.target.result}" 
+                 style="width:100%; height:100%; object-fit:cover; border-radius:14px;">
+            <button onclick="clearOfficerPreview()" 
+                    style="position:absolute;top:12px;right:12px;background:rgba(239,68,68,0.9);color:white;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:0.2s;">
+              ×
+            </button>
+          </div>
+        `;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      if (file) alert('❌ Please select a valid image file (JPG, PNG, GIF)');
+      event.target.value = '';
+    }
+  };
+
+  window.clearOfficerPreview = () => {
+    elements.officerImage.value = '';
+    currentOfficerImage = null;
+    elements.officerPreviewBox.innerHTML = `
+      <div class="preview-placeholder" style="text-align:center;padding:50px;color:#94a3b8;">
+        <div style="font-size:32px;margin-bottom:15px;">👤</div>
+        <div style="font-size:16px;">Officer photo preview will appear here</div>
+      </div>
+    `;
+  };
+
+  window.clearOfficerForm = () => {
+    elements.editOfficerId.value = '';
+    elements.officerYear.value = '';
+    elements.officerName.value = '';
+    elements.officerPosition.value = '';
+    elements.officerImage.value = '';
+    currentOfficerImage = null;
+    elements.officerSaveText.textContent = 'Save Officer';
+    elements.cancelEditBtn.style.display = 'none';
+    clearOfficerPreview();
+  };
+
+  window.cancelOfficerEdit = () => {
+    clearOfficerForm();
+  };
+
+  window.saveOfficer = async () => {
+    const year = elements.officerYear.value.trim();
+    const name = elements.officerName.value.trim();
+    const position = elements.officerPosition.value.trim();
+    
+    if (!year || !name || !position) {
+      alert('❌ Please fill all required fields: Year, Name, and Position!');
+      return;
+    }
+
+    const saveBtn = elements.saveOfficerBtn;
+    const saveTextEl = elements.officerSaveText;
+    
+    saveBtn.disabled = true;
+    saveTextEl.textContent = 'Saving...';
+
+    try {
+      let imageUrl = null;
+      if (currentOfficerImage) {
+        saveTextEl.textContent = 'Uploading photo...';
+        imageUrl = await uploadImage(currentOfficerImage);
+      }
+
+      const editId = elements.editOfficerId.value;
+      
+      if (editId) {
+        // UPDATE
+        await updateDoc(doc(db, 'officers', editId), { 
+          year, name, position, 
+          ...(imageUrl && { image: imageUrl }),
+          updatedAt: new Date()
+        });
+        alert('✅ Officer updated successfully!');
+      } else {
+        // CREATE
+        await addDoc(collection(db, 'officers'), {
+          year, name, position,
+          image: imageUrl || '',
+          createdAt: new Date()
+        });
+        alert('✅ Officer added successfully!');
+      }
+
+      clearOfficerForm();
+      
+    } catch (error) {
+      console.error('Officer save error:', error);
+      alert('❌ Save failed: ' + error.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveTextEl.textContent = 'Save Officer';
+    }
+  };
+
+  window.editOfficer = (id, year, name, position, image) => {
+    elements.editOfficerId.value = id;
+    elements.officerYear.value = year || '';
+    elements.officerName.value = name || '';
+    elements.officerPosition.value = position || '';
+    
+    // Load existing image preview
+    if (image) {
+      elements.officerPreviewBox.innerHTML = `
+        <div style="position:relative;">
+          <img src="${image}" style="width:100%; height:100%; object-fit:cover; border-radius:14px;">
+          <button onclick="clearOfficerPreview()" 
+                  style="position:absolute;top:12px;right:12px;background:rgba(239,68,68,0.9);color:white;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+            ×
+          </button>
+        </div>
+      `;
+    }
+    
+    elements.officerSaveText.textContent = 'Update Officer';
+    elements.cancelEditBtn.style.display = 'flex';
+    elements.officerName.focus();
+  };
+
+  window.deleteOfficer = async (id) => {
+    if (confirm('🗑️ Delete this officer? This cannot be undone.')) {
+      try {
+        await deleteDoc(doc(db, 'officers', id));
+        alert('✅ Officer deleted!');
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('❌ Delete failed: ' + error.message);
+      }
+    }
+  };
+
+  // 🔥 SUBSCRIBERS FUNCTIONS
+  window.addSubscriber = async () => {
+    const email = elements.subscriberEmail.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("❌ Please enter a valid email address!");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'subscribers'), {
+        email: email.toLowerCase().trim(),
+        subscribedAt: new Date(),
+        source: 'manual'
+      });
+      elements.subscriberEmail.value = '';
+      alert('✅ Subscriber added!');
+    } catch (error) {
+      console.error('Add subscriber error:', error);
+      if (error.code?.includes('permission-denied')) {
+        alert('❌ Email already exists or permission denied');
+      } else {
+        alert('❌ Add failed: ' + error.message);
+      }
+    }
+  };
+
+  window.deleteSubscriber = async (id) => {
+    if (confirm('🗑️ Remove this subscriber?')) {
+      try {
+        await deleteDoc(doc(db, 'subscribers', id));
+        alert('✅ Subscriber removed!');
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('❌ Delete failed: ' + error.message);
+      }
+    }
+  };
+
+
+
+
+  // 🔥 EXCEL IMPORT
+  window.previewExcelFile = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      showProgress('Parsing Excel file...');
+      const emails = await parseExcelFile(file);
+      previewEmails = emails.filter(e => isValidEmail(e));
+
+      hideProgress();
+      
+      elements.uploadPreview.style.display = 'block';
+      elements.previewCount.textContent = previewEmails.length;
+      elements.emailPreview.innerHTML =
+        previewEmails.slice(0, 15).map(e => `• ${e}`).join('<br>') +
+        (previewEmails.length > 15 ? `<br><strong>...and ${previewEmails.length - 15} more</strong>` : '');
+        
+    } catch (err) {
+      hideProgress();
+      console.error('Excel parse error:', err);
+      alert('❌ Invalid file format! Please use Excel/CSV with email column.');
+      event.target.value = '';
+    }
+  };
+
+  window.confirmUpload = async () => {
+    if (previewEmails.length === 0) {
+      alert('No valid emails to upload!');
+      return;
+    }
+
+    showProgress(`Uploading ${previewEmails.length} subscribers...`);
+    let success = 0;
+    let failed = 0;
+
+    try {
+      for (let i = 0; i < previewEmails.length; i++) {
+        const email = previewEmails[i];
+        try {
+          await addDoc(collection(db, 'subscribers'), {
+            email: email.toLowerCase().trim(),
+            subscribedAt: new Date(),
+            source: 'excel_upload'
+          });
+          success++;
+        } catch (e) {
+          failed++;
+        }
+        setProgress(((i + 1) / previewEmails.length) * 100);
+      }
+
+      alert(`✅ Success: ${success} | Failed: ${failed}`);
+      
+      // Reset
+      elements.uploadPreview.style.display = 'none';
+      previewEmails = [];
+      elements.excelFile.value = '';
+      
+    } catch (error) {
+      console.error('Bulk upload error:', error);
+      alert('❌ Upload failed: ' + error.message);
+    } finally {
+      hideProgress();
+    }
+  };
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+ async function parseExcelFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        
+        // Convert to JSON with header row
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        
+        if (!jsonData || jsonData.length === 0) {
+          resolve([]);
+          return;
+        }
+        
+        const emails = [];
+        
+        // Find email column (try common header names)
+        let emailColumnIndex = -1;
+        const headerRow = jsonData[0];
+        
+        for (let i = 0; i < headerRow.length; i++) {
+          const header = String(headerRow[i]).toLowerCase();
+          if (header.includes('email') || header === 'e-mail' || header === 'mail') {
+            emailColumnIndex = i;
+            break;
+          }
+        }
+        
+        // If no email column found, try to detect email in first column
+        if (emailColumnIndex === -1) {
+          // Check if first row looks like email
+          const firstValue = String(jsonData[1]?.[0] || '');
+          if (firstValue.includes('@')) {
+            emailColumnIndex = 0;
+          }
+        }
+        
+        // Extract emails
+        const startRow = emailColumnIndex >= 0 ? 1 : 0;
+        
+        for (let i = startRow; i < jsonData.length; i++) {
+          const row = jsonData[i];
+          if (!row) continue;
+          
+          let email = null;
+          
+          if (emailColumnIndex >= 0) {
+            email = String(row[emailColumnIndex] || '').trim();
+          } else {
+            // Try any column that contains @
+            for (const cell of row) {
+              const str = String(cell || '');
+              if (str.includes('@')) {
+                email = str;
+                break;
+              }
+            }
+          }
+          
+          if (email && isValidEmail(email)) {
+            emails.push(email);
+          }
+        }
+        
+        resolve(emails);
+      } catch (error) {
+        reject(new Error('Invalid file format: ' + error.message));
+      }
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+  // 🔥 MAINTENANCE MODE
+  window.toggleMaintenance = async (enable) => {
+    const btn = enable ? elements.enableBtn : elements.disableBtn;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '⏳ Loading...';
+    btn.disabled = true;
+    
+    try {
+      await setDoc(doc(db, "settings", "maintenance"), {
+        enabled: enable,
+        updatedAt: new Date()
+      }, { merge: true });
+      
+      const status = enable ? 'ENABLED' : 'DISABLED';
+      elements.statusText.innerHTML = enable 
+        ? '🛠️ <strong style="color:#ef4444;">Maintenance Mode: ON</strong>'
+        : '✅ <strong style="color:#10b981;">Website Live</strong>';
+      
+      alert(`✅ Maintenance mode ${status.toLowerCase()} successfully!`);
+      
+    } catch (error) {
+      console.error('Maintenance toggle error:', error);
+      alert('❌ Failed to update maintenance mode: ' + error.message);
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  };
+
+  // 🔥 REAL-TIME LISTENERS
+ // 🔥 REAL-TIME LISTENERS: POSTS
+onSnapshot(query(collection(db, "happenings"), orderBy("createdAt", "desc")), (snap) => {
+  document.getElementById('dash-postCount').textContent = snap.size;
+  elements.postCount.textContent = snap.size;
+  
+  elements.list.innerHTML = snap.docs.map((d) => {
+    const data = d.data();
+    const date = data.createdAt?.toDate()?.toLocaleDateString() || 'Just now';
+    
+    // Safely escape values for data attributes
+    const safeTitle = (data.title || '').replace(/"/g, '&quot;').replace(/'/g, "&#39;");
+    const safeDesc = (data.description || '').replace(/"/g, '&quot;').replace(/'/g, "&#39;");
+    const safeId = d.id;
+    
+    return `
+      <div class="card-grid-item">
+        ${data.image ? `<img src="${data.image}" style="width:100%;height:180px;object-fit:cover;border-radius:16px;margin-bottom:20px;" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <h4 style="margin:0 0 12px 0;font-size:18px;">${data.title || 'Untitled'}</h4>
+        <p style="color:#cbd5e1;margin-bottom:20px;line-height:1.5;font-size:14px;">${((data.description || '').substring(0, 120))}${(data.description || '').length > 120 ? '...' : ''}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#94a3b8;font-size:14px;">${date}</span>
+          <div style="display:flex;gap:10px;">
+            <button class="primary edit-post-btn" 
+                    data-id="${safeId}" 
+                    data-title="${safeTitle}" 
+                    data-description="${safeDesc}"
+                    style="padding:10px 16px;font-size:14px;">✏️ Edit</button>
+            <button class="primary" onclick="deletePost('${safeId}')" style="background:linear-gradient(135deg,#ef4444,#dc2626);padding:10px 16px;font-size:14px;">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('') || '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#64748b;">🎉 No happenings yet! Create your first one above.</div>';
+}, (error) => {
+  console.error('Posts listener error:', error);
+});
+
+
+// Replace the officers listener with this:
+onSnapshot(collection(db, 'officers'), (snap) => {
+  elements.officerCount.textContent = snap.size;
+  elements.dashofficerCount.textContent = snap.size;
+  elements.officersList.innerHTML = snap.docs.map((d) => {
+    const data = d.data();
+    
+    // Safely escape values
+    const safeYear = (data.year || '').replace(/"/g, '&quot;').replace(/'/g, "&#39;");
+    const safeName = (data.name || '').replace(/"/g, '&quot;').replace(/'/g, "&#39;");
+    const safePosition = (data.position || '').replace(/"/g, '&quot;').replace(/'/g, "&#39;");
+    const safeImage = data.image || '';
+    
+    return `
+      <div class="card-grid-item">
+        ${data.image ? `<img src="${data.image}" style="width:100%;height:160px;object-fit:cover;border-radius:16px;margin-bottom:20px;" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <h4 style="margin:0 0 8px 0;font-size:18px;">${data.name || 'Unnamed'}</h4>
+        <p style="color:#3b82f6;font-weight:600;margin-bottom:20px;font-size:14px;">${data.position || 'No position'} • ${data.year || 'No year'}</p>
+        <div style="display:flex;gap:10px;">
+          <button class="primary edit-officer-btn" 
+                  data-id="${d.id}" 
+                  data-year="${safeYear}" 
+                  data-name="${safeName}" 
+                  data-position="${safePosition}" 
+                  data-image="${safeImage}"
+                  style="padding:10px 16px;font-size:14px;flex:1;">✏️ Edit</button>
+          <button class="primary delete-officer-btn" 
+                  data-id="${d.id}"
+                  style="background:linear-gradient(135deg,#ef4444,#dc2626);padding:10px 16px;font-size:14px;">🗑️ Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('') || '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#64748b;">👮 No officers yet! Add your first officer above.</div>';
+}, (error) => {
+  console.error('Officers listener error:', error);
+});
+
+
+
+  onSnapshot(collection(db, 'subscribers'), (snap) => {
+    elements.subscriberCount.textContent = snap.size;
+    elements.dashsubscriberCount.textContent = snap.size;
+    elements.subscribersList.innerHTML = snap.docs.map((d) => {
+      const data = d.data();
+      const date = data.subscribedAt?.toDate()?.toLocaleDateString() || 'Just now';
+      return `
+        <div class="card-grid-item">
+          <h4 style="margin:0 0 8px 0;font-size:16px;">${data.email || 'No email'}</h4>
+          <p style="color:#10b981;font-weight:500;margin-bottom:20px;font-size:14px;">✅ Active subscriber</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:#94a3b8;font-size:14px;">${date}</span>
+            <button class="primary" onclick="deleteSubscriber('${d.id}')" style="background:linear-gradient(135deg,#ef4444,#dc2626);padding:12px 20px;font-size:14px;">Remove</button>
+          </div>
+        </div>
+      `;
+    }).join('') || '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#64748b;">👤 No subscribers yet. Add some above!</div>';
+  }, (error) => {
+    console.error('Subscribers listener error:', error);
+  });
+
+  // Maintenance status
+  onSnapshot(doc(db, 'settings', 'maintenance'), (docSnap) => {
+    if (!docSnap.exists()) {
+      elements.statusText.innerHTML = '✅ <strong style="color:#10b981;">Website Live</strong> - No maintenance mode';
+      return;
+    }
+    const data = docSnap.data();
+    elements.statusText.innerHTML = data.enabled 
+      ? '🛠️ <strong style="color:#ef4444;">Maintenance Mode: ON</strong>'
+      : '✅ <strong style="color:#10b981;">Website Live</strong>';
+  }, (error) => {
+    elements.statusText.innerHTML = '✅ <strong style="color:#10b981;">Website Live</strong>';
+  });
+
+
+
+  /* ================= YEAR + COURSE SUMMARY ================= */
+
+const summaryGrid = document.getElementById("studentSummaryGrid");
+
+onSnapshot(collection(db, "students"), (snap) => {
+
+  // TOTAL STUDENTS
+  document.getElementById("totalStudents").textContent = snap.size;
+
+  // STRUCTURE
+  const summary = {
+    "1st Year": { HE: 0, IA: 0, ICT: 0 },
+    "2nd Year": { HE: 0, IA: 0, ICT: 0 },
+    "3rd Year": { HE: 0, IA: 0, ICT: 0 },
+    "4th Year": { HE: 0, IA: 0, ICT: 0 }
+  };
+
+  snap.forEach((docSnap) => {
+
+    const data = docSnap.data();
+
+    const year = (data.year || "").trim();
+    const course = (data.course || "").trim().toUpperCase();
+
+    // DETECT COURSE
+    let detectedCourse = null;
+
+    if (course.includes("HE")) {
+      detectedCourse = "HE";
+    }
+    else if (course.includes("IA")) {
+      detectedCourse = "IA";
+    }
+    else if (course.includes("ICT")) {
+      detectedCourse = "ICT";
+    }
+
+    // COUNT
+    if (summary[year] && detectedCourse) {
+      summary[year][detectedCourse]++;
+    }
+
+  });
+
+  // BUILD TABLE
+  let html = `
+
+  <div style="overflow:auto;">
+
+    <table style="
+      width:100%;
+      border-collapse:collapse;
+      margin-top:15px;
+    ">
+
+      <thead>
+        <tr>
+          <th style="
+              background:#60a5fa;
+              color:white;
+              padding:14px;
+            ">
+            Year Level
+          </th>
+
+          <th style="
+              background:#60a5fa;
+              color:white;
+              padding:14px;
+          ">
+            HE
+          </th>
+
+            <th style="
+              background:#60a5fa;
+              color:white;
+              padding:14px;
+            ">
+              IA
+            </th>
+
+            <th style="
+              background:#60a5fa;
+              color:white;
+              padding:14px;
+            ">
+              ICT
+            </th>
+
+            <th style="
+              background:#60a5fa;
+              color:white;
+              padding:14px;
+            ">
+              Total
+            </th>
+        </tr>
+      </thead>
+
+      <tbody>
+  `;
+
+  Object.keys(summary).forEach(year => {
+
+    const HE = summary[year].HE;
+    const IA = summary[year].IA;
+    const ICT = summary[year].ICT;
+
+    const total = HE + IA + ICT;
+
+    html += `
+      <tr>
+        <td><strong>${year}</strong></td>
+
+        <td>${HE}</td>
+
+        <td>${IA}</td>
+
+        <td>${ICT}</td>
+
+        <td>
+          <strong>${total}</strong>
+        </td>
+      </tr>
+    `;
+
+  });
+
+  html += `
+      </tbody>
+    </table>
+
+  </div>
+  `;
+
+  summaryGrid.innerHTML = html;
+
+});
+
+
+  // 🔥 KEYBOARD SHORTCUTS
+  document.addEventListener('keydown', (e) => {
+    // Ctrl+Enter to save posts/officers
+    if (e.ctrlKey && e.key === 'Enter') {
+      const activeSection = document.querySelector('.section.active');
+      if (activeSection.id === 'posts') {
+        savePost();
+      } else if (activeSection.id === 'officers') {
+        saveOfficer();
+      }
+    }
+    // Enter to add subscriber
+    if (e.key === 'Enter' && document.activeElement === elements.subscriberEmail) {
+      e.preventDefault();
+      addSubscriber();
+    }
+  });
+
+
+  // Handle Edit Button Clicks using Event Delegation
+document.addEventListener('click', function(e) {
+  const editBtn = e.target.closest('.edit-post-btn');
+  
+  if (editBtn) {
+    const id = editBtn.getAttribute('data-id');
+    const title = editBtn.getAttribute('data-title').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    const description = editBtn.getAttribute('data-description').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    
+    window.editPost(id, title, description);
+    return;
+  }
+  
+  // Handle Delete Button Clicks
+  const deleteBtn = e.target.closest('.delete-post-btn');
+  if (deleteBtn) {
+    const id = deleteBtn.getAttribute('data-id');
+    window.deletePost(id);
+    return;
+  }
+});
+
+// Handle Edit Button Clicks using Event Delegation
+document.addEventListener('click', function(e) {
+  // Check if the clicked element has the 'edit-btn' class
+  const editBtn = e.target.closest('.edit-btn');
+  
+  if (editBtn) {
+    const id = editBtn.getAttribute('data-id');
+    const title = editBtn.getAttribute('data-title');
+    const description = editBtn.getAttribute('data-description');
+    
+    // Call the edit function with the data attributes
+    window.editPost(id, title, description);
+  }
+});
+
+  // 🔥 INIT
+  document.addEventListener('DOMContentLoaded', () => {
+    showSection('dashboard');
+    console.log('Admin Dashboard loaded successfully!');
+  });
+
+  // 🔥 GLOBAL ERROR HANDLER
+  window.addEventListener('error', (e) => {
+    console.error('Global error:', e.error);
+    hideProgress();
+  });
+
+
+  // ================= SUBSCRIBER EXCEL IMPORT =================
+let subscriberEmails = [];
+
+window.previewSubscriberExcel = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    showProgress('Parsing Excel file...');
+    
+    const data = await parseExcelFile(file);
+    subscriberEmails = data.filter(email => isValidEmail(email));
+
+    hideProgress();
+    
+    if (subscriberEmails.length === 0) {
+      alert('No valid emails found in the file!');
+      event.target.value = '';
+      return;
+    }
+
+    // Show preview
+    document.getElementById('subscriberUploadPreview').style.display = 'block';
+    document.getElementById('subscriberPreviewCount').textContent = subscriberEmails.length;
+    
+    // Show first 15 emails
+    document.getElementById('subscriberPreviewList').innerHTML = 
+      subscriberEmails.slice(0, 15).map(e => `<div style="padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">• ${e}</div>`).join('') +
+      (subscriberEmails.length > 15 ? `<div style="color: #8b5cf6; font-weight: 600; margin-top: 10px;">...and ${subscriberEmails.length - 15} more</div>` : '');
+        
+  } catch (err) {
+    hideProgress();
+    console.error('Excel parse error:', err);
+    alert('❌ Invalid file format! Please use Excel/CSV with email column.');
+    event.target.value = '';
+  }
+};
+
+window.importSubscribersFromExcel = async () => {
+  if (subscriberEmails.length === 0) {
+    alert('No emails to import!');
+    return;
+  }
+
+  if (!confirm(`Import ${subscriberEmails.length} emails to subscribers?`)) {
+    return;
+  }
+
+  showProgress(`Importing ${subscriberEmails.length} subscribers...`);
+  let success = 0;
+  let failed = 0;
+  const errors = [];
+
+  try {
+    for (let i = 0; i < subscriberEmails.length; i++) {
+      const email = subscriberEmails[i];
+      try {
+        await addDoc(collection(db, 'subscribers'), {
+          email: email.toLowerCase().trim(),
+          subscribedAt: new Date(),
+          source: 'excel_import'
+        });
+        success++;
+      } catch (e) {
+        // Skip duplicates or errors
+        failed++;
+        if (errors.length < 5) errors.push(email);
+      }
+      setProgress(((i + 1) / subscriberEmails.length) * 100);
+    }
+
+    alert(`✅ Success: ${success} | Already exists/Failed: ${failed}`);
+    
+    // Reset
+    document.getElementById('subscriberUploadPreview').style.display = 'none';
+    document.getElementById('excelSubscribersFile').value = '';
+    subscriberEmails = [];
+    
+  } catch (error) {
+    console.error('Bulk upload error:', error);
+    alert('❌ Upload failed: ' + error.message);
+  } finally {
+    hideProgress();
+  }
+};
+
+
+  /* ================= OFFICER================= */
+
+  // Handle Edit/Delete Officer Clicks
+document.addEventListener('click', function(e) {
+  // Edit Officer
+  const editOfficerBtn = e.target.closest('.edit-officer-btn');
+  if (editOfficerBtn) {
+    const id = editOfficerBtn.getAttribute('data-id');
+    const year = editOfficerBtn.getAttribute('data-year').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    const name = editOfficerBtn.getAttribute('data-name').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    const position = editOfficerBtn.getAttribute('data-position').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+    const image = editOfficerBtn.getAttribute('data-image');
+    
+    window.editOfficer(id, year, name, position, image);
+    return;
+  }
+  
+  // Delete Officer
+  const deleteOfficerBtn = e.target.closest('.delete-officer-btn');
+  if (deleteOfficerBtn) {
+    const id = deleteOfficerBtn.getAttribute('data-id');
+    window.deleteOfficer(id);
+    return;
+  }
+});
+  /* ================= STUDENT SEARCH ================= */
+
+window.filterStudents = () => {
+
+  const search = document
+    .getElementById("studentSearch")
+    .value
+    .toLowerCase();
+
+  const sortYear = document
+    .getElementById("sortYear")
+    .value
+    .toLowerCase();
+
+  const sortCourse = document
+    .getElementById("sortCourse")
+    .value
+    .toLowerCase();
+
+  const table = document.getElementById("studentsTable");
+
+  const rows = table.getElementsByTagName("tr");
+
+  for (let i = 0; i < rows.length; i++) {
+
+    const row = rows[i];
+
+    const text = row.innerText.toLowerCase();
+
+    // SEARCH
+    const matchesSearch =
+      text.includes(search);
+
+    // YEAR FILTER
+    const matchesYear =
+      !sortYear || text.includes(sortYear);
+
+    // COURSE FILTER
+    const matchesCourse =
+      !sortCourse || text.includes(sortCourse);
+
+    // SHOW / HIDE
+    if (
+      matchesSearch &&
+      matchesYear &&
+      matchesCourse
+    ) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+
+  }
+
+};
+
+
+
+/* ================= LIVE LISTENER ================= */
+onSnapshot(captchaRef, (snap) => {
+
+  const enabled = snap.exists()
+    ? snap.data()?.recaptchaEnabled !== false
+    : true;
+
+  const status = document.getElementById("recaptchaStatus");
+
+  if (status) {
+    status.innerHTML = enabled
+      ? "🟢 reCAPTCHA ENABLED"
+      : "🔴 reCAPTCHA DISABLED";
+  }
+
+  console.log("🔐 CAPTCHA STATE:", enabled);
+});
+
+
+window.toggleRecaptcha = async function () {
+  try {
+    const snap = await getDoc(captchaRef);
+
+    const current = snap.exists()
+      ? snap.data().recaptchaEnabled !== false
+      : true;
+
+    await setDoc(
+      captchaRef,
+      {
+        recaptchaEnabled: !current,
+        updatedAt: Date.now()
+      },
+      { merge: true }
+    );
+
+    console.log("✅ reCAPTCHA toggled:", !current);
+  } catch (err) {
+    console.error("❌ Failed to update reCAPTCHA setting:", err);
+    alert("Failed to update reCAPTCHA setting.\nCheck Firestore rules.");
+  }
+};
+
+  console.log('🚀 Pro Admin Dashboard initialized!');
+
+  window.app = app;
+window.db = db;
+window.importStudents = importStudents;
+loadRecaptchaStatus();
+
+
+
+</script>
+<script src="../updater.js"></script>
+<script src="../assets/js/block_inspect.js"></script>
+<script preload type="module" src="../assets/js/quick-pantry_admin.js"></script>
+<script preload type="module" src="../assets/js/manage_user.js"></script>
+
+</body>
+</html>

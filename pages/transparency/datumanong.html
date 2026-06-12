@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
+
+<title>
+  Transparency Admin Dashboard
+</title>
+
+<!-- JSZip -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#f4f6f9;
+  padding:20px;
+}
+
+/* HIDDEN UNTIL LOGIN */
+
+.wrapper{
+  max-width:900px;
+  margin:auto;
+  display:none;
+}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  margin-bottom:20px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.logout-btn{
+  background:red;
+}
+
+h1{
+  margin-bottom:20px;
+  color:#111827;
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:#f1f5f9;
+  outline:none;
+}
+
+textarea{
+  resize:none;
+  height:120px;
+}
+
+button{
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  cursor:pointer;
+  color:#fff;
+  font-size:15px;
+}
+
+.upload-btn{
+  width:100%;
+  background:#111827;
+}
+
+.export-btn{
+  background:#2563eb;
+  width:100%;
+  margin-top:10px;
+}
+
+.status{
+  margin-top:15px;
+  color:#555;
+}
+
+.documents{
+  display:grid;
+  gap:15px;
+}
+
+.doc{
+  background:#f9fafb;
+  padding:15px;
+  border-radius:15px;
+}
+
+.doc h3{
+  margin-bottom:10px;
+}
+
+.doc p{
+  margin-bottom:8px;
+}
+
+.doc-buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.previewBtn{
+  background:#2563eb;
+}
+
+.editBtn{
+  background:#111827;
+}
+
+.deleteBtn{
+  background:red;
+}
+
+.close-preview{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:red;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+  z-index:10;
+}
+
+.preview-content{
+  width:100%;
+  height:100%;
+  border:none;
+  background:white;
+}
+
+.preview-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#111;
+}
+
+.preview-video{
+  width:100%;
+  height:100%;
+  background:black;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN SCREEN -->
+
+<div id="loginScreen" style="
+position:fixed;
+inset:0;
+background:#0f172a;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+
+  <div style="
+  width:320px;
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  ">
+
+    <h2 style="
+    margin-bottom:20px;
+    color:#111827;
+    ">
+      Admin Login
+    </h2>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="Email"
+      style="
+      width:100%;
+      padding:12px;
+      margin-bottom:12px;
+      border:none;
+      border-radius:12px;
+      background:#f1f5f9;
+      "
+    />
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      style="
+      width:100%;
+      padding:12px;
+      margin-bottom:15px;
+      border:none;
+      border-radius:12px;
+      background:#f1f5f9;
+      "
+    />
+
+    <button
+      id="loginBtn"
+      style="
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:12px;
+      background:#111827;
+      color:white;
+      cursor:pointer;
+      "
+    >
+      Login
+    </button>
+
+    <p
+      id="loginStatus"
+      style="
+      margin-top:10px;
+      color:red;
+      font-size:14px;
+      "
+    ></p>
+
+  </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="wrapper">
+
+  <div class="topbar">
+
+    <h1>
+      Transparency Admin Dashboard
+    </h1>
+
+    <button
+      class="logout-btn"
+      onclick="logout()"
+    >
+      Logout
+    </button>
+
+  </div>
+
+  <!-- UPLOAD -->
+
+  <div class="card">
+
+    <h1>
+      Transparency Upload Panel
+    </h1>
+
+    <div class="form-group">
+
+      <label>
+        Document Title
+      </label>
+
+      <input
+        type="text"
+        id="docTitle"
+        placeholder="Enter title"
+      />
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Category
+      </label>
+
+      <select id="docCategory">
+
+
+        <option value="Fund Liquidation">
+          Fund Liquidation
+        </option>
+
+        <option value="Financial Reports">
+          Financial Reports
+        </option>
+
+        <option value="Resolutions">
+          Resolutions
+        </option>
+
+        <option value="Narrative Reports">
+          Narrative Reports
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Description
+      </label>
+
+      <textarea
+        id="docDescription"
+        placeholder="Enter description"
+      ></textarea>
+
+    </div>
+
+    <div class="form-group">
+
+      <label>
+        Upload File
+      </label>
+
+      <input
+        type="file"
+        id="docFile"
+      />
+
+    </div>
+
+    <button
+      class="upload-btn"
+      id="uploadBtn"
+    >
+      Upload Document
+    </button>
+
+    <button
+      class="export-btn"
+      id="exportBtn"
+    >
+      Export All as ZIP
+    </button>
+
+    <div
+      class="status"
+      id="statusText"
+    ></div>
+
+  </div>
+
+  <!-- DOCUMENTS -->
+
+  <div class="card">
+
+    <h1>
+      Uploaded Documents
+    </h1>
+
+    <div
+      id="documents"
+      class="documents"
+    ></div>
+
+  </div>
+
+</div>
+
+<!-- PREVIEW MODAL -->
+
+<div
+  id="previewModal"
+  style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:99999;
+  "
+>
+
+  <div style="
+  width:90%;
+  height:90%;
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  position:relative;
+  ">
+
+    <button
+      class="close-preview"
+      onclick="closePreview()"
+    >
+      Close
+    </button>
+
+    <div
+      id="previewContainer"
+      style="
+      width:100%;
+      height:100%;
+      "
+    ></div>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+import {
+  initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+  query,
+  orderBy
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAmzy_8B2h_sTtAKE2dVgfl2K-OXd5TVZg",
+  authDomain: "voting-890f2.firebaseapp.com",
+  projectId: "voting-890f2",
+  storageBucket: "voting-890f2.appspot.com",
+  messagingSenderId: "537631858085",
+  appId: "1:537631858085:web:aa1cc4b76f40a0bce21c4c"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+/* =========================
+   CLOUDINARY
+========================= */
+
+const CLOUD_NAME = "dou3k8w8r";
+
+const UPLOAD_PRESET = "transparency";
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const wrapper =
+  document.querySelector(".wrapper");
+
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const loginStatus =
+  document.getElementById("loginStatus");
+
+const uploadBtn =
+  document.getElementById("uploadBtn");
+
+const exportBtn =
+  document.getElementById("exportBtn");
+
+const statusText =
+  document.getElementById("statusText");
+
+const documentsContainer =
+  document.getElementById("documents");
+
+const previewModal =
+  document.getElementById("previewModal");
+
+const previewContainer =
+  document.getElementById("previewContainer");
+
+/* =========================
+   CLOSE PREVIEW
+========================= */
+
+window.closePreview = function() {
+
+  previewModal.style.display = "none";
+
+  previewContainer.innerHTML = "";
+
+};
+
+/* =========================
+   LOGIN
+========================= */
+
+loginBtn.addEventListener("click", async () => {
+
+  const email =
+    document.getElementById("email").value;
+
+  const password =
+    document.getElementById("password").value;
+
+  if (!email || !password) {
+
+    loginStatus.innerText =
+      "Complete all fields.";
+
+    return;
+
+  }
+
+  try {
+
+    loginBtn.disabled = true;
+
+    loginBtn.innerText =
+      "Logging in...";
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    loginStatus.innerText = "";
+
+  } catch (err) {
+
+    console.error(err);
+
+    loginStatus.innerText =
+      "Invalid email or password.";
+
+    loginBtn.disabled = false;
+
+    loginBtn.innerText = "Login";
+
+  }
+
+});
+
+/* =========================
+   AUTH CHECK
+========================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+  if (user) {
+
+    loginScreen.style.display = "none";
+
+    wrapper.style.display = "block";
+
+    loginBtn.disabled = false;
+
+    loginBtn.innerText = "Login";
+
+    await loadDocuments();
+
+  } else {
+
+    loginScreen.style.display = "flex";
+
+    wrapper.style.display = "none";
+
+  }
+
+});
+
+/* =========================
+   LOGOUT
+========================= */
+
+window.logout = async function() {
+
+  await signOut(auth);
+
+};
+
+/* =========================
+   UPLOAD
+========================= */
+
+uploadBtn.addEventListener("click", async () => {
+
+  const title =
+    document.getElementById("docTitle").value;
+
+  const category =
+    document.getElementById("docCategory").value;
+
+  const description =
+    document.getElementById("docDescription").value;
+
+  const file =
+    document.getElementById("docFile").files[0];
+
+  if (!title || !file) {
+
+    alert("Complete all fields.");
+
+    return;
+
+  }
+
+  try {
+
+    uploadBtn.disabled = true;
+
+    statusText.innerText =
+      "Uploading...";
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    formData.append(
+      "upload_preset",
+      UPLOAD_PRESET
+    );
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    const data = await res.json();
+
+    await addDoc(
+      collection(db, "transparency"),
+      {
+        title,
+        category,
+        description,
+        fileURL: data.secure_url,
+        fileName: file.name,
+        createdAt: serverTimestamp()
+      }
+    );
+
+    statusText.innerText =
+      "Uploaded successfully.";
+
+    uploadBtn.disabled = false;
+
+    document.getElementById("docTitle").value = "";
+
+    document.getElementById("docDescription").value = "";
+
+    document.getElementById("docFile").value = "";
+
+    loadDocuments();
+
+  } catch (err) {
+
+    console.error(err);
+
+    statusText.innerText =
+      "Upload failed.";
+
+    uploadBtn.disabled = false;
+
+  }
+
+});
+
+/* =========================
+   LOAD DOCUMENTS
+========================= */
+
+async function loadDocuments() {
+
+  documentsContainer.innerHTML = "";
+
+  const q = query(
+    collection(db, "transparency"),
+    orderBy("createdAt", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  snapshot.forEach((d) => {
+
+    const data = d.data();
+
+    const el =
+      document.createElement("div");
+
+    el.className = "doc";
+
+    el.innerHTML = `
+
+      <h3>${data.title}</h3>
+
+      <p><strong>Category:</strong> ${data.category}</p>
+
+      <p>${data.description || ""}</p>
+
+      <div class="doc-buttons">
+
+        <button
+          class="previewBtn"
+          data-url="${data.fileURL}"
+          data-name="${data.fileName}"
+        >
+          Preview
+        </button>
+
+        <button
+          class="editBtn"
+          data-id="${d.id}"
+        >
+          Edit
+        </button>
+
+        <button
+          class="deleteBtn"
+          data-id="${d.id}"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    `;
+
+    documentsContainer.appendChild(el);
+
+  });
+
+  attachActions();
+
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+function attachActions() {
+
+  /* PREVIEW */
+
+ document
+  .querySelectorAll(".previewBtn")
+  .forEach((btn) => {
+
+    btn.addEventListener(
+      "click",
+      () => {
+
+        const url =
+          btn.dataset.url;
+
+        const fileName =
+          btn.dataset.name.toLowerCase();
+
+        previewContainer.innerHTML = "";
+
+        /* PDF */
+
+        if (
+          fileName.endsWith(".pdf")
+        ) {
+
+          previewContainer.innerHTML = `
+            <embed
+              src="${url}"
+              type="application/pdf"
+              class="preview-content"
+            />
+          `;
+
+        }
+
+        /* IMAGE */
+
+        else if (
+          fileName.match(/\.(jpg|jpeg|png|gif|webp)$/)
+        ) {
+
+          previewContainer.innerHTML = `
+            <img
+              src="${url}"
+              class="preview-image"
+            />
+          `;
+
+        }
+
+        /* VIDEO */
+
+        else if (
+          fileName.match(/\.(mp4|webm|ogg)$/)
+        ) {
+
+          previewContainer.innerHTML = `
+            <video
+              class="preview-video"
+              controls
+              autoplay
+            >
+              <source src="${url}">
+            </video>
+          `;
+
+        }
+
+        /* DOCX / PPTX / XLSX */
+
+        else if (
+          fileName.match(/\.(doc|docx|ppt|pptx|xls|xlsx)$/)
+        ) {
+
+          previewContainer.innerHTML = `
+            <iframe
+              class="preview-content"
+              src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}"
+            ></iframe>
+          `;
+
+        }
+
+        /* TXT */
+
+        else if (
+          fileName.match(/\.(txt)$/)
+        ) {
+
+          previewContainer.innerHTML = `
+            <iframe
+              class="preview-content"
+              src="${url}"
+            ></iframe>
+          `;
+
+        }
+
+        /* AUDIO */
+
+        else if (
+          fileName.match(/\.(mp3|wav|ogg)$/)
+        ) {
+
+          previewContainer.innerHTML = `
+            <div style="
+              display:flex;
+              justify-content:center;
+              align-items:center;
+              height:100%;
+              background:#111;
+            ">
+              <audio
+                controls
+                autoplay
+                style="width:90%;"
+              >
+                <source src="${url}">
+              </audio>
+            </div>
+          `;
+
+        }
+
+        /* FALLBACK */
+
+        else {
+
+          previewContainer.innerHTML = `
+            <div style="
+              display:flex;
+              justify-content:center;
+              align-items:center;
+              height:100%;
+              font-size:20px;
+              padding:20px;
+              text-align:center;
+            ">
+              Preview not available for this file type.
+            </div>
+          `;
+
+        }
+
+        previewModal.style.display =
+          "flex";
+
+      }
+    );
+
+  });
+
+  /* DELETE */
+
+  document
+    .querySelectorAll(".deleteBtn")
+    .forEach((btn) => {
+
+      btn.addEventListener(
+        "click",
+        async () => {
+
+          const id =
+            btn.dataset.id;
+
+          if (
+            !confirm(
+              "Delete this document?"
+            )
+          ) return;
+
+          await deleteDoc(
+            doc(db, "transparency", id)
+          );
+
+          loadDocuments();
+
+        }
+      );
+
+    });
+
+  /* EDIT */
+
+  document
+    .querySelectorAll(".editBtn")
+    .forEach((btn) => {
+
+      btn.addEventListener(
+        "click",
+        async () => {
+
+          const id =
+            btn.dataset.id;
+
+          const newTitle =
+            prompt("New Title:");
+
+          if (!newTitle) return;
+
+          const newCategory =
+            prompt("New Category:");
+
+          const newDesc =
+            prompt("New Description:");
+
+          await updateDoc(
+            doc(db, "transparency", id),
+            {
+              title: newTitle,
+              category: newCategory || "",
+              description: newDesc || ""
+            }
+          );
+
+          loadDocuments();
+
+        }
+      );
+
+    });
+
+}
+
+/* =========================
+   EXPORT ZIP
+========================= */
+exportBtn.addEventListener("click", async () => {
+
+  try {
+
+    exportBtn.disabled = true;
+
+    exportBtn.innerText =
+      "Creating ZIP...";
+
+    const zip = new JSZip();
+
+    const snapshot =
+      await getDocs(
+        collection(db, "transparency")
+      );
+
+    for (const d of snapshot.docs) {
+
+      const data = d.data();
+
+      const res =
+        await fetch(data.fileURL);
+
+      const blob =
+        await res.blob();
+
+      /* GET ORIGINAL FILE EXTENSION */
+
+      const originalName =
+        data.fileName || "file";
+
+      const extension =
+        originalName.includes(".")
+          ? originalName.split(".").pop()
+          : "file";
+
+      /* USE TITLE AS FILE NAME */
+
+      const finalFileName =
+        `${data.title}.${extension}`;
+
+      zip.file(
+        finalFileName,
+        blob
+      );
+
+    }
+
+    const content =
+      await zip.generateAsync({
+        type: "blob"
+      });
+
+    const url =
+      URL.createObjectURL(content);
+
+    const a =
+      document.createElement("a");
+
+    a.href = url;
+
+    a.download =
+      "Transparency.zip";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+    exportBtn.disabled = false;
+
+    exportBtn.innerText =
+      "Export All as ZIP";
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("ZIP export failed.");
+
+    exportBtn.disabled = false;
+
+    exportBtn.innerText =
+      "Export All as ZIP";
+
+  }
+
+});
+
+</script>
+
+<script src="/updater.js"></script>
+<script src="/assets/js/offline_cache.js"></script>
+<script src="/assets/js/block_inspect.js"></script>
+<script type="module" src="/assets/js/maintenance.js"></script>
+
+</body>
+</html>

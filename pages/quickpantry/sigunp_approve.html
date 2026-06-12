@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Student Requests
+  </title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+
+      background:#f1f5f9;
+
+      padding:30px;
+
+    }
+
+    .container{
+
+      max-width:1200px;
+
+      margin:auto;
+
+    }
+
+    .header{
+
+      margin-bottom:24px;
+
+    }
+
+    .header h1{
+
+      font-size:32px;
+
+      color:#0f172a;
+
+      margin-bottom:8px;
+
+    }
+
+    .header p{
+
+      color:#64748b;
+
+      font-size:15px;
+
+    }
+
+    .table-card{
+
+      background:white;
+
+      border-radius:16px;
+
+      overflow:hidden;
+
+      box-shadow:
+        0 10px 30px rgba(0,0,0,.08);
+
+    }
+
+    table{
+
+      width:100%;
+
+      border-collapse:collapse;
+
+    }
+
+    thead{
+
+      background:#2563eb;
+
+      color:white;
+
+    }
+
+    thead th{
+
+      padding:16px;
+
+      text-align:left;
+
+      font-size:14px;
+
+    }
+
+    tbody td{
+
+      padding:16px;
+
+      border-bottom:
+        1px solid #e2e8f0;
+
+      font-size:14px;
+
+      color:#334155;
+
+    }
+
+    tbody tr:hover{
+
+      background:#f8fafc;
+
+    }
+
+    .actions{
+
+      display:flex;
+
+      gap:8px;
+
+    }
+
+    .approve-btn{
+
+      background:#16a34a;
+
+      color:white;
+
+      border:none;
+
+      padding:8px 14px;
+
+      border-radius:8px;
+
+      cursor:pointer;
+
+      font-weight:600;
+
+    }
+
+    .approve-btn:hover{
+      opacity:.9;
+    }
+
+    .reject-btn{
+
+      background:#ef4444;
+
+      color:white;
+
+      border:none;
+
+      padding:8px 14px;
+
+      border-radius:8px;
+
+      cursor:pointer;
+
+      font-weight:600;
+
+    }
+
+    .reject-btn:hover{
+      opacity:.9;
+    }
+
+    @media(max-width:768px){
+
+      body{
+        padding:15px;
+      }
+
+      .table-card{
+        overflow-x:auto;
+      }
+
+      table{
+        min-width:900px;
+      }
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="header">
+
+      <h1>
+        Pending Student Requests
+      </h1>
+
+      <p>
+        Review and approve student registrations
+      </p>
+
+    </div>
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Student Number
+            </th>
+
+            <th>
+              Name
+            </th>
+
+            <th>
+              Year
+            </th>
+
+            <th>
+              Course
+            </th>
+
+            <th>
+              Date Submitted
+            </th>
+
+            <th>
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="requestsTable">
+
+          <tr>
+
+            <td
+              colspan="6"
+              style="
+                text-align:center;
+                padding:20px;
+              "
+            >
+
+              Loading requests...
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+<script type="module">
+
+// ================= IMPORT FIREBASE =================
+
+import {
+
+  collection,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  doc
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+// ================= IMPORT DB =================
+
+import { db }
+
+from "/assets/config/quickpantry_config.js";
+
+// ================= TABLE =================
+
+const requestsTable =
+  document.getElementById("requestsTable");
+
+// ================= LOAD REQUESTS =================
+
+onSnapshot(
+
+  collection(db, "student_requests"),
+
+  (snap) => {
+
+    if (snap.empty) {
+
+      requestsTable.innerHTML = `
+
+<tr>
+
+  <td
+    colspan="6"
+    style="
+      text-align:center;
+      padding:20px;
+    "
+  >
+
+    No pending requests
+
+  </td>
+
+</tr>
+
+`;
+
+      return;
+    }
+
+    requestsTable.innerHTML =
+      snap.docs.map((d) => {
+
+      const data =
+        d.data();
+
+      const date =
+        data.createdAt
+        ?.toDate?.()
+        .toLocaleDateString()
+        || "Now";
+
+      return `
+
+<tr>
+
+  <td>
+    ${data.studentNumber || ""}
+  </td>
+
+  <td>
+    ${data.name || ""}
+  </td>
+
+  <td>
+    ${data.year || ""}
+  </td>
+
+  <td>
+    ${data.course || ""}
+  </td>
+
+  <td>
+    ${date}
+  </td>
+
+  <td>
+
+    <div class="actions">
+
+      <!-- APPROVE -->
+
+      <button
+
+        class="approve-btn"
+
+        data-id="${d.id}"
+
+        data-number="${data.studentNumber}"
+
+        data-name="${data.name}"
+
+        data-year="${data.year}"
+
+        data-course="${data.course}"
+
+      >
+
+        ✅ Approve
+
+      </button>
+
+      <!-- REJECT -->
+
+      <button
+
+        class="reject-btn"
+
+        data-id="${d.id}"
+
+      >
+
+        ❌ Reject
+
+      </button>
+
+    </div>
+
+  </td>
+
+</tr>
+
+`;
+
+    }).join("");
+
+});
+
+// ================= CLICK EVENTS =================
+
+document.addEventListener(
+
+  "click",
+
+  async (e) => {
+
+    // ================= APPROVE =================
+
+    const approveBtn =
+      e.target.closest(".approve-btn");
+
+    if (approveBtn) {
+
+      try {
+
+        const id =
+          approveBtn.getAttribute("data-id");
+
+        const studentData = {
+
+          studentNumber:
+            approveBtn.getAttribute("data-number"),
+
+          name:
+            approveBtn.getAttribute("data-name"),
+
+          year:
+            approveBtn.getAttribute("data-year"),
+
+          course:
+            approveBtn.getAttribute("data-course"),
+
+          approvedAt:
+            new Date()
+
+        };
+
+        // ================= SAVE TO STUDENTS =================
+
+        await addDoc(
+
+          collection(db, "students"),
+
+          studentData
+
+        );
+
+        // ================= DELETE REQUEST =================
+
+        await deleteDoc(
+
+          doc(
+            db,
+            "student_requests",
+            id
+          )
+
+        );
+
+        alert(
+          "✅ Student approved"
+        );
+
+      }
+
+      catch (err) {
+
+        console.error(err);
+
+        alert(
+          "❌ " + err.message
+        );
+
+      }
+
+    }
+
+    // ================= REJECT =================
+
+    const rejectBtn =
+      e.target.closest(".reject-btn");
+
+    if (rejectBtn) {
+
+      const id =
+        rejectBtn.getAttribute("data-id");
+
+      if (
+        !confirm(
+          "Reject this request?"
+        )
+      ) return;
+
+      try {
+
+        await deleteDoc(
+
+          doc(
+            db,
+            "student_requests",
+            id
+          )
+
+        );
+
+        alert(
+          "✅ Request rejected"
+        );
+
+      }
+
+      catch (err) {
+
+        console.error(err);
+
+        alert(
+          "❌ " + err.message
+        );
+
+      }
+
+    }
+
+});
+
+</script>
+</body>
+</html>

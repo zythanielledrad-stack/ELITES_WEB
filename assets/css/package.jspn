@@ -1,0 +1,10 @@
+{
+    "name": "elites-calendar",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "vercel dev"
+    },
+    "dependencies": {
+        "@vercel/kv": "^1.1.2"
+    }
+}
